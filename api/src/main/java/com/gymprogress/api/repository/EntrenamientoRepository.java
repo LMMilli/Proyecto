@@ -1,0 +1,11 @@
+package com.gymprogress.api.repository;
+
+import com.gymprogress.api.model.Entrenamiento;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, Long> {
+    List<Entrenamiento> findByUsuarioIdOrderByFechaDesc(Long usuarioId);
+
+}
