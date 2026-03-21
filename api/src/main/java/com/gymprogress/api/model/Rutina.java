@@ -14,9 +14,6 @@ public class Rutina {
     @Column(nullable = false)
     private String nombre;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
 
     @ManyToMany
     @JoinTable(
@@ -29,10 +26,9 @@ public class Rutina {
     public Rutina() {
     }
 
-    public Rutina(Long id, String nombre, Usuario usuario, List<Ejercicio> ejercicios) {
+    public Rutina(Long id, String nombre, List<Ejercicio> ejercicios) {
         this.id = id;
         this.nombre = nombre;
-        this.usuario = usuario;
         this.ejercicios = ejercicios;
     }
 
@@ -44,9 +40,6 @@ public class Rutina {
         return nombre;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
 
     public List<Ejercicio> getEjercicios() {
         return ejercicios;
@@ -58,10 +51,6 @@ public class Rutina {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     public void setEjercicios(List<Ejercicio> ejercicios) {
