@@ -44,4 +44,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //Retrofit para las peticiones HTTP
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+
+    //Gson para traducir los JSON del servidor
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 }
