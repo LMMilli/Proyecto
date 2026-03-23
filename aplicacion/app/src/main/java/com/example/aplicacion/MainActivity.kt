@@ -1,17 +1,81 @@
 package com.example.aplicacion
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.aplicacion.api.ApiClient
+import com.example.aplicacion.api.ApiService
+import com.example.aplicacion.model.LoginRequest
+import com.example.aplicacion.model.Usuario
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Call
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        
+        //Enlazmos las variables con los item de la pantalla
+        val etEmail = findViewById<EditText>(R.id.etEmailLogin)
+        val etPassword = findViewById<EditText>(R.id.etPasswordLogin)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val tvRegistro = findViewById<TextView>(R.id.tvIrARegistro)
+
+        //Iniciamos Retrofit
+        val apiService = ApiClient.retrofit.create(ApiService::class.java)
+
+        //Fucion del boton entrar
+        btnLogin.setOnClickListener {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+
+            //Validacion para que los campos no este vacioes
+            if(email.isEmpty() || password.isEmpty()){
+                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            //Crear el LogineRequest con los datos
+            val loginRequest = LoginRequest(email, password)
+
+            //Eviamos la peticon POST al servidor en segundo plano
+            apiService.longin(loginRequest).enqueue(object : Callback<Usuario>{
+                //Si el servidor responde tanto un OK como un error
+                override fun onResponse(call : Call<Usuario>, response: Response<Usuario>){
+                    if(response.isSuccessful){
+                        //Funciona el Login
+                        val usuarioLogueado = response.body()
+                        Toast.makeText(this@MainActivity, "Bienvendio ${usuarioLogueado?.nombre}!",
+                            Toast.LENGTH_LONG).show()
+
+                        //Pantalla principal
+                    }else{
+                        //No funciona
+                        Toast.makeText(this@MainActivity, "Email o contraseña incorrecto",
+                            Toast.LENGTH_LONG).show()
+                    }
+                }
+                override fun onFailure(call: Call<Usuario>, t: Throwable){
+                    Toast.makeText(this@MainActivity, "Error de conexión",
+                        Toast.LENGTH_LONG).show()
+                }
+            })
+
+        }
+
+        //Fucion no tines cuenta
+        tvRegistro.setOnClickListener {
+            Toast.makeText(this, "Redirigiendo al registro",
+                Toast.LENGTH_SHORT).show()
+            //Pantalla de registro
+        }
+
+
 
     }
 }
+
