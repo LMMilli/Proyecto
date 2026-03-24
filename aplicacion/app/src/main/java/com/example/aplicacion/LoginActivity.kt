@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Call
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -49,18 +49,18 @@ class MainActivity : AppCompatActivity() {
                     if(response.isSuccessful){
                         //Funciona el Login
                         val usuarioLogueado = response.body()
-                        Toast.makeText(this@MainActivity, "Bienvendio ${usuarioLogueado?.nombre}!",
+                        Toast.makeText(this@LoginActivity, "Bienvendio ${usuarioLogueado?.nombre}!",
                             Toast.LENGTH_LONG).show()
 
                         //Pantalla principal
                     }else{
                         //No funciona
-                        Toast.makeText(this@MainActivity, "Email o contraseña incorrecto",
+                        Toast.makeText(this@LoginActivity, "Email o contraseña incorrecto",
                             Toast.LENGTH_LONG).show()
                     }
                 }
                 override fun onFailure(call: Call<Usuario>, t: Throwable){
-                    Toast.makeText(this@MainActivity, "Error de conexión",
+                    Toast.makeText(this@LoginActivity, "Error de conexión",
                         Toast.LENGTH_LONG).show()
                 }
             })
