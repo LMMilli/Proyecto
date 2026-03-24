@@ -69,9 +69,9 @@ class LoginActivity : AppCompatActivity() {
 
         //Fucion no tines cuenta
         tvRegistro.setOnClickListener {
-            Toast.makeText(this, "Redirigiendo al registro",
-                Toast.LENGTH_SHORT).show()
             //Pantalla de registro
+            val intent = android.content.Intent(this, RegistroActivity::class.java)
+            startActivity(intent)
         }
 
 
