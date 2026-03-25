@@ -52,7 +52,16 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Bienvendio ${usuarioLogueado?.nombre}!",
                             Toast.LENGTH_LONG).show()
 
-                        //Pantalla principal
+                        //Vamos a la HomeActivity
+                        intent = android.content.Intent(this@LoginActivity, HomeActivity::class.java)
+
+                        //Le añadimos los datos del usuario
+                        intent.putExtra("NOMBRE_USUARIO", usuarioLogueado?.nombre)
+                        intent.putExtra("ID_USUARIO", usuarioLogueado?.id)
+                        intent.putExtra("EMAIL_USUARIO", usuarioLogueado?.email)
+                        startActivity(intent)
+                        finish()//Se cirra la el login para que el usuario si le da para atras no vuelva al login iuu
+
                     }else{
                         //No funciona
                         Toast.makeText(this@LoginActivity, "Email o contraseña incorrecto",
