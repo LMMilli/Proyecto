@@ -14,13 +14,16 @@ public class Ejercicio {
 
     private String grupoMuscular;
 
+    private String descripcion;
+
     public Ejercicio() {
     }
 
-    public Ejercicio(Long id, String nombre, String grupoMuscular) {
+    public Ejercicio(Long id, String nombre, String grupoMuscular, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.grupoMuscular = grupoMuscular;
+        this.descripcion = descripcion;
     }
 
     public Long getId() {
@@ -35,6 +38,8 @@ public class Ejercicio {
         return grupoMuscular;
     }
 
+    public String getDescripcion() { return descripcion; }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -45,5 +50,9 @@ public class Ejercicio {
 
     public void setGrupoMuscular(String grupoMuscular) {
         this.grupoMuscular = grupoMuscular;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

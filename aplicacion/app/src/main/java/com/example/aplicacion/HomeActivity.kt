@@ -54,9 +54,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnAdmin.setOnClickListener {
-            Toast.makeText(this, "Proximanete: Panel de Administraccion",
-                Toast.LENGTH_SHORT).show()
-
+            val intent = android.content.Intent(this, AdminActivity::class.java)
+            startActivity(intent)
         }
 
     }
