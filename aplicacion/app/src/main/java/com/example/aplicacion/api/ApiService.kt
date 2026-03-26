@@ -27,4 +27,7 @@ interface ApiService {
 
     @POST("api/rutinas")
     fun crearRutina(@Body request: RutinaRequest): Call<Rutina>
+
+    @GET("api/rutinas")
+    fun obtenerTodasLasRutinas(): Call<List<Rutina>>
 }

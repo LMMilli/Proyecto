@@ -23,8 +23,8 @@ class AdminActivity : AppCompatActivity() {
         }
 
         btnRutinas.setOnClickListener {
-            Toast.makeText(this, "Proxamente: Crear una rutina",
-                Toast.LENGTH_LONG).show()
+            val intent = android.content.Intent(this, CrearRutinaActivity::class.java)
+            startActivity(intent)
         }
 
         btnVolver.setOnClickListener {
