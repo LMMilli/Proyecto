@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:gravity="center_horizontal"
+    android:background="#FFFFFF"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nueva Medida"
+        android:textSize="28sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etNuevoPeso"
+        android:hint="Peso actual (kg)"
+        android:inputType="numberDecimal"
+        android:minHeight="48dp"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etGrasaNueva"
+        android:hint="Porcentaje de Grasa (%)"
+        android:inputType="numberDecimal"
+        android:minHeight="48dp"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnGuardarMedidaForm"
+        android:textStyle="bold"
+        android:text="GUARDAR"
+        android:textSize="16sp"
+        android:backgroundTint="#FF5722"/>
+
+</LinearLayout>

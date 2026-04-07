@@ -2,6 +2,8 @@ package com.example.aplicacion.api
 
 import com.example.aplicacion.model.Ejercicio
 import com.example.aplicacion.model.LoginRequest
+import com.example.aplicacion.model.Medida
+import com.example.aplicacion.model.MedidaRequest
 import com.example.aplicacion.model.RegistroRequest
 import com.example.aplicacion.model.Rutina
 import com.example.aplicacion.model.RutinaRequest
@@ -30,4 +32,10 @@ interface ApiService {
 
     @GET("api/rutinas")
     fun obtenerTodasLasRutinas(): Call<List<Rutina>>
+
+    @POST("api/medidas")
+    fun registarMedida(@Body request: MedidaRequest):Call<Void>
+
+    @GET("api/medidas/usuario/{id}")
+    fun obtenerMedidas(@Path("id") idUsuario: Long): Call<List<Medida>>
 }

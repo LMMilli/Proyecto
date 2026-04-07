@@ -46,8 +46,9 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnMedidas.setOnClickListener {
-            Toast.makeText(this, "Proximament: Mi peos y % grasa",
-                Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(this, MedidasActivity::class.java)
+            intent.putExtra("ID_USUARIO", idUsuario)
+            startActivity(intent)
         }
 
         btnAdmin.setOnClickListener {

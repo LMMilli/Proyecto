@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Aplicacion"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".NuevaMedidaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MedidasActivity"
+            android:exported="false" />
+        <activity
             android:name=".CatalogoRutinasActivity"
             android:exported="false" />
         <activity
