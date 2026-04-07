@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +41,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnRutinas.setOnClickListener {
-            Toast.makeText(this, "Proximament: Ver Rutinas",
-                Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(this, CatalogoRutinasActivity::class.java)
+            startActivity(intent)
         }
 
         btnMedidas.setOnClickListener {

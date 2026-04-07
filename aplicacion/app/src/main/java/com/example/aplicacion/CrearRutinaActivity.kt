@@ -6,16 +6,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.Ejercicio
-import okhttp3.Response
+import com.example.aplicacion.model.Rutina
+import com.example.aplicacion.model.RutinaRequest
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 
 class CrearRutinaActivity : AppCompatActivity() {
     private var listaEjerciciosOriginal : List<Ejercicio> = emptyList()
@@ -80,6 +79,23 @@ class CrearRutinaActivity : AppCompatActivity() {
             }
 
             //Creamos el DTO y lo enviamos
+            val request = RutinaRequest(nombreRutina, ejerciciosSelecionadosIds)
+            apiService.crearRutina(request).enqueue(object : Callback<Rutina>{
+                override fun onResponse(call: Call<Rutina>, response: Response<Rutina>){
+                    if(response.isSuccessful){
+                        Toast.makeText(this@CrearRutinaActivity, "Rutina Creada",
+                            Toast.LENGTH_SHORT).show()
+                        finish()
+                    }else{
+                        Toast.makeText(this@CrearRutinaActivity, "Error al crear la rutina",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onFailure(call: Call<Rutina>, t: Throwable){
+                    Toast.makeText(this@CrearRutinaActivity, "Error de red",
+                        Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 }
