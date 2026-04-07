@@ -36,8 +36,9 @@ class HomeActivity : AppCompatActivity() {
 
         //Funciones de botones
         btnEntrenamientos.setOnClickListener {
-            Toast.makeText(this, "Proximament: Historial de entrenamientos",
-                Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(this, HistorialEntrenamientosActivity::class.java)
+            intent.putExtra("ID_USUARIO", idUsuario)
+            startActivity(intent)
         }
 
         btnRutinas.setOnClickListener {

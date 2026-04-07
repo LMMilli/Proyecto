@@ -1,6 +1,8 @@
 package com.example.aplicacion.api
 
 import com.example.aplicacion.model.Ejercicio
+import com.example.aplicacion.model.Entrenamiento
+import com.example.aplicacion.model.EntrenamientoRequest
 import com.example.aplicacion.model.LoginRequest
 import com.example.aplicacion.model.Medida
 import com.example.aplicacion.model.MedidaRequest
@@ -38,4 +40,10 @@ interface ApiService {
 
     @GET("api/medidas/usuario/{id}")
     fun obtenerMedidas(@Path("id") idUsuario: Long): Call<List<Medida>>
+
+    @POST("api/entrenamientos")
+    fun guardarEntrenamiento(@Body request: EntrenamientoRequest): Call<Void>
+
+    @GET("api/entrenamientos/usuario/{id}")
+    fun obtenerHistorialEntrenamientos(@Path("id") idUsuario: Long): Call<List<Entrenamiento>>
 }

@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Aplicacion"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".HistorialEntrenamientosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EntrenamientoActivoActivity"
+            android:exported="false" />
+        <activity
             android:name=".NuevaMedidaActivity"
             android:exported="false" />
         <activity
