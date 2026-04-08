@@ -51,7 +51,7 @@ class HistorialEntrenamientosActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<Entrenamiento>>, response: Response<List<Entrenamiento>>){
                 if(response.isSuccessful && response.body() !=null){
                     val lista = response.body()!!
-                    val nombres = lista.map {"${it.nombre} \n ${it.fecha ?: ""}"}
+                    val nombres = lista.map {"${it.fecha ?: ""}"}
 
                     lvHistorial.adapter = ArrayAdapter(
                         this@HistorialEntrenamientosActivity, android.R.layout.simple_list_item_1, nombres

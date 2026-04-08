@@ -2,6 +2,7 @@ package com.example.aplicacion.model
 
 data class EntrenamientoRequest(
     val usuarioId: Long,
-    val nombre: String,
-    val detalles: List<DetalleEntrenamientoRequest>
+    val rutinaId: Long?, //Puede ser nula el entrenamiento no se basa en ninguna rutina
+    val duracionMinutos: Int,
+    val series: List<SerieRequest>
 )

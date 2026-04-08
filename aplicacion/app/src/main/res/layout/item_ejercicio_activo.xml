@@ -1,56 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="16dp"
     android:background="#FFFFFF"
-    android:elevation="2dp">
+    android:elevation="4dp">
 
     <TextView
+        android:id="@+id/tvNombreEjercicioItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tvNombreEjercicioItem"
         android:text="Nombre del Ejercicio"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#2196F3"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="3">
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/etSeriesItem"
-            android:hint="Series"
-            android:inputType="number"
-            android:textSize="14sp"
-            android:layout_marginEnd="8dp"/>
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/etRepsItem"
-            android:hint="Reps"
-            android:inputType="number"
-            android:textSize="14sp"
-            android:layout_marginEnd="14sp"/>
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/etPesoItem"
-            android:hint="Peso (kg)"
-            android:inputType="numberDecimal"
-            android:textSize="14sp"/>
+        android:weightSum="3"
+        android:layout_marginBottom="4dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Reps" android:textStyle="bold" android:textAlignment="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="KG" android:textStyle="bold" android:textAlignment="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RPE" android:textStyle="bold" android:textAlignment="center"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llContenedorSeriesDeEsteEjercicio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <Button
+        android:id="@+id/btnAgregarSerieItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Añadir Serie"
+        android:textColor="#2196F3"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_marginTop="8dp"/>
+
 </LinearLayout>
