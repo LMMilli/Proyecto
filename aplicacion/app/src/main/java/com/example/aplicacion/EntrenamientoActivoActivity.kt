@@ -32,11 +32,20 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     //Calcualar la duración del entrenamiento
     private val tiempoInicio = System.currentTimeMillis()
 
+    private var idRutinaAsignada: Long? =null
+    private var idsEjercicioRutina: LongArray? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrenamiento_activo)
 
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
+        val idRutina = intent.getLongExtra("ID_RUTINA", -1L)
+        if(idRutina != -1L){
+            idRutinaAsignada = idRutina
+            idsEjercicioRutina = intent.getLongArrayExtra("IDS_EJERCICIOS_RUTINA")
+            findViewById<TextView>(R.id.tvNombreEntrenamiento).text = "Entrenando Rutina"
+        }
         apiService = ApiClient.retrofit.create(ApiService::class.java)
         contendorEjercicios = findViewById(R.id.llContendorEjercicios)
 
@@ -55,7 +64,19 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     private fun cargarEjerciciosDelServidor(){
         apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>>{
             override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>){
-                if(response.isSuccessful) listaEjerciciosDisponibles = response.body() ?: emptyList()
+                if(response.isSuccessful && response.body() != null) {
+                    listaEjerciciosDisponibles = response.body()!!
+
+                    //Si han pasado una id de la rutina, inyectamos las tarjetas de los ejercicios directamente
+                    for(idBuscado in idsEjercicioRutina!!){
+                        //Buscamos el ejercicio en el catalogo
+                        val ejercicioEncontrado = listaEjerciciosDisponibles.find { it.id == idBuscado }
+                        //Si existe, cremoas su tarje visula automaticamente
+                        if(ejercicioEncontrado != null){
+                            crearTarjetaEjercicio(ejercicioEncontrado)
+                        }
+                    }
+                }
             }
             override fun onFailure(call: Call<List<Ejercicio>>, t: Throwable){}
         })
@@ -141,7 +162,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         //Creamos el objeto final
         val request = EntrenamientoRequest(
             usuarioId = idUsuario,
-            rutinaId = null, // De moento es libre
+            rutinaId = idRutinaAsignada,
             duracionMinutos = minutosDuracion,
             series = todasLasSeriesFinales
         )

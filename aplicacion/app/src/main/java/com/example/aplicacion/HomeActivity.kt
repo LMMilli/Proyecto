@@ -43,6 +43,7 @@ class HomeActivity : AppCompatActivity() {
 
         btnRutinas.setOnClickListener {
             val intent = android.content.Intent(this, CatalogoRutinasActivity::class.java)
+            intent.putExtra("ID_USUARIO", idUsuario)
             startActivity(intent)
         }
 

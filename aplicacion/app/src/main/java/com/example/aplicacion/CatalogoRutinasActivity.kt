@@ -54,9 +54,20 @@ class CatalogoRutinasActivity : AppCompatActivity() {
 
         lvRutinas.setOnItemClickListener { parent, view, position, id ->
             val rutinaSeleccionada = listaRutinas[position]
-            Toast.makeText(this, "Has seleccionado: ${rutinaSeleccionada.nombre}", Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(this, EntrenamientoActivoActivity::class.java)
 
-            // TODO: Viajar a la pantalla de "Entrenar Rutina" pasándole el ID de esta rutina
+            //Rescatamos el ID de usuario que nos paso la Home
+            val idUsuario = getIntent().getLongExtra("ID_USUARIO", -1L)
+            intent.putExtra("ID_USUARIO", idUsuario)
+
+            //Le pasamos la id de la rutina
+            intent.putExtra("ID_RUTINA", rutinaSeleccionada.id)
+
+            //Sacamsos solos los ID de los ejercicios y los mandos como un Array
+            val idsEjercicios = rutinaSeleccionada.ejercicio?.mapNotNull { it.id }?.toLongArray()
+            intent.putExtra("ID_EJERCICIOS_RUTINA", idsEjercicios)
+
+            startActivity(intent)
         }
     }
 }
