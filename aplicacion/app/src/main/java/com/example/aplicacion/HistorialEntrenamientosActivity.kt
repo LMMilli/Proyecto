@@ -21,6 +21,8 @@ class HistorialEntrenamientosActivity : AppCompatActivity() {
     private lateinit var apiService: ApiService
     private lateinit var lvHistorial: ListView
     private var idUsuario: Long = -1L
+
+    private var listaEntrenamientos: List<Entrenamiento> = emptyList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_historial_entrenamientos)
@@ -30,6 +32,16 @@ class HistorialEntrenamientosActivity : AppCompatActivity() {
 
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
         apiService = ApiClient.retrofit.create(ApiService::class.java)
+
+        lvHistorial.setOnItemClickListener { _, _, position, _ ->
+
+            //Seleccionadomos el entrenamiento
+            val entrenamientoSelecionado = listaEntrenamientos[position]
+
+            val intent = Intent(this, DetalleEntrenamientoActivity::class.java)
+            intent.putExtra("ID_ENTRENAMIENTO", entrenamientoSelecionado.id)
+            startActivity(intent)
+        }
 
         btnNuevo.setOnClickListener {
             val intent = Intent(this, EntrenamientoActivoActivity::class.java)
@@ -50,8 +62,8 @@ class HistorialEntrenamientosActivity : AppCompatActivity() {
         apiService.obtenerHistorialEntrenamientos(idUsuario).enqueue(object : Callback<List<Entrenamiento>>{
             override fun onResponse(call: Call<List<Entrenamiento>>, response: Response<List<Entrenamiento>>){
                 if(response.isSuccessful && response.body() !=null){
-                    val lista = response.body()!!
-                    val nombres = lista.map {"${it.fecha ?: ""}"}
+                    listaEntrenamientos = response.body()!!
+                    val nombres = listaEntrenamientos.map {"${it.fecha ?: ""}"}
 
                     lvHistorial.adapter = ArrayAdapter(
                         this@HistorialEntrenamientosActivity, android.R.layout.simple_list_item_1, nombres

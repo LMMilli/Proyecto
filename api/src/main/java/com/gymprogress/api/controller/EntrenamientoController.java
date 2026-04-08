@@ -112,4 +112,18 @@ public class EntrenamientoController {
 
         return ResponseEntity.ok(historial);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Entrenamiento> obtenerDetalleEntrenamiento(@PathVariable("id") Long id) {
+
+        Optional<Entrenamiento> entrenamiento = entrenamientoRepository.findById(id);
+
+        if (entrenamiento.isPresent()) {
+            // Si existe, lo devolvemos con un OK (Código 200)
+            return ResponseEntity.ok(entrenamiento.get());
+        } else {
+            // Si no existe, devolvemos un Not Found (Código 404)
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

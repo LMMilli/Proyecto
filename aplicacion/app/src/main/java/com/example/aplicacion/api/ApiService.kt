@@ -46,4 +46,7 @@ interface ApiService {
 
     @GET("api/entrenamientos/usuario/{id}")
     fun obtenerHistorialEntrenamientos(@Path("id") idUsuario: Long): Call<List<Entrenamiento>>
+
+    @GET("api/entrenamientos/{id}")
+    fun obtenerDetallesEntrenamiento(@Path("id") idEntrenamiento: Long): Call<Entrenamiento>
 }
