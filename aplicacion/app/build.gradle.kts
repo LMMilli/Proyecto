@@ -50,4 +50,7 @@ dependencies {
 
     //Gson para traducir los JSON del servidor
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+
+    //Libreria para dibujar graficas
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

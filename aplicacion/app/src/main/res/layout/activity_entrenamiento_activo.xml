@@ -15,6 +15,16 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
+    <Chronometer
+        android:id="@+id/cronometroEntrenamiento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="36sp"
+        android:textColor="#4CAF50"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

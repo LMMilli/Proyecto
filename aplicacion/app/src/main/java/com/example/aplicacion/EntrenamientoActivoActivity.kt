@@ -3,6 +3,7 @@ package com.example.aplicacion
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Chronometer
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,22 +30,28 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     data class TarjetaEjercicio(val vistaTarjeta: View, val ejercicioId: Long)
     private val tarjetasEnPantalla = mutableListOf<TarjetaEjercicio>()
 
-    //Calcualar la duración del entrenamiento
-    private val tiempoInicio = System.currentTimeMillis()
-
+    private lateinit var cronometro : Chronometer
     private var idRutinaAsignada: Long? =null
-    private var idsEjercicioRutina: LongArray? = null
+    private var idsEjercicioRutina: List<Long>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrenamiento_activo)
 
+        cronometro = findViewById(R.id.cronometroEntrenamiento)
+        cronometro.base = android.os.SystemClock.elapsedRealtime()
+        cronometro.start()
+
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
         val idRutina = intent.getLongExtra("ID_RUTINA", -1L)
         if(idRutina != -1L){
             idRutinaAsignada = idRutina
-            idsEjercicioRutina = intent.getLongArrayExtra("IDS_EJERCICIOS_RUTINA")
             findViewById<TextView>(R.id.tvNombreEntrenamiento).text = "Entrenando Rutina"
+
+            val textoIds = intent.getStringExtra("IDS_EJERCICIOS_STRING")
+            if(!textoIds.isNullOrEmpty()){
+                idsEjercicioRutina = textoIds.split(",").mapNotNull { it.toLongOrNull() }
+            }
         }
         apiService = ApiClient.retrofit.create(ApiService::class.java)
         contendorEjercicios = findViewById(R.id.llContendorEjercicios)
@@ -63,18 +70,33 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
     private fun cargarEjerciciosDelServidor(){
         apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>>{
-            override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>){
-                if(response.isSuccessful && response.body() != null) {
-                    listaEjerciciosDisponibles = response.body()!!
+            override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>) {
+                if (response.isSuccessful && response.body() != null) {
 
-                    //Si han pasado una id de la rutina, inyectamos las tarjetas de los ejercicios directamente
-                    for(idBuscado in idsEjercicioRutina!!){
-                        //Buscamos el ejercicio en el catalogo
-                        val ejercicioEncontrado = listaEjerciciosDisponibles.find { it.id == idBuscado }
-                        //Si existe, cremoas su tarje visula automaticamente
-                        if(ejercicioEncontrado != null){
-                            crearTarjetaEjercicio(ejercicioEncontrado)
+                    listaEjerciciosDisponibles = response.body()!!.filterNotNull()
+
+                    val idsParaInyectar = idsEjercicioRutina
+
+                    if (idsParaInyectar != null) {
+                        // CHIVATO 1: ¿Llegó la maleta sana y salva a esta pantalla?
+                        Toast.makeText(this@EntrenamientoActivoActivity, "Aduana: Recibidos ${idsParaInyectar.size} IDs", Toast.LENGTH_SHORT).show()
+
+                        var tarjetasCreadas = 0
+
+                        for (idBuscado in idsParaInyectar) {
+                            val ejercicioEncontrado = listaEjerciciosDisponibles.find { it.id == idBuscado }
+
+                            if (ejercicioEncontrado != null) {
+                                crearTarjetaEjercicio(ejercicioEncontrado)
+                                tarjetasCreadas++
+                            }
                         }
+
+                        // CHIVATO 2: ¿Cuántos ejercicios coincidieron con el catálogo?
+                        Toast.makeText(this@EntrenamientoActivoActivity, "Éxito: Se han inyectado $tarjetasCreadas tarjetas", Toast.LENGTH_LONG).show()
+
+                    } else {
+                        Toast.makeText(this@EntrenamientoActivoActivity, "Error: La maleta llegó vacía (null)", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -156,8 +178,12 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT).show()
         }
 
+        cronometro.stop()
+
+
         //Calculamos la duraccion aproximada en minutos
-        val minutosDuracion = ((System.currentTimeMillis() - tiempoInicio) / 60000).toInt()
+        val tiempoTranscurridoMilis = android.os.SystemClock.elapsedRealtime() - cronometro.base
+        val minutosDuracion = (tiempoTranscurridoMilis / 60000).toInt()
 
         //Creamos el objeto final
         val request = EntrenamientoRequest(
@@ -172,6 +198,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 if(response.isSuccessful){
                     Toast.makeText(this@EntrenamientoActivoActivity, "Entrenamiento Guardado",
                         Toast.LENGTH_SHORT).show()
+                    finish()
                 }else{
                     Toast.makeText(this@EntrenamientoActivoActivity, "Error en la base de datos",
                         Toast.LENGTH_SHORT).show()

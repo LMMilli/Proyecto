@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp"
+    android:padding="24dp"
     android:gravity="center_horizontal"
-    android:background="#FFFFFF">
+    android:background="#FAFAFA">
 
 
 
@@ -13,12 +13,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Historial de Medidas: "
+        android:text="Mi Progreso"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"/>
-
+        android:textColor="#000000"
+        android:layout_marginBottom="16dp"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +26,19 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:backgroundTint="#FF5722"/>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/graficaPeso"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Historial Detallado: "
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
 
     <ListView
         android:id="@+id/lvHistorialMedidas"
