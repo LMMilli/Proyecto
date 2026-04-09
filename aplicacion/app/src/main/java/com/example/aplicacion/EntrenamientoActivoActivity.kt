@@ -34,10 +34,14 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     private var idRutinaAsignada: Long? =null
     private var idsEjercicioRutina: List<Long>? = null
 
+    private lateinit var llDescanso: LinearLayout
+    private lateinit var choronoDescanso: Chronometer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrenamiento_activo)
 
+        llDescanso = findViewById(R.id.llDescanso)
+        choronoDescanso = findViewById(R.id.chronoDescanso)
         cronometro = findViewById(R.id.cronometroEntrenamiento)
         cronometro.base = android.os.SystemClock.elapsedRealtime()
         cronometro.start()
@@ -210,5 +214,15 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun iniciarCronometroDescanso(){
+        llDescanso.visibility = View.VISIBLE
+
+        //Reinicamos el contrometro y lo arrancamos
+        choronoDescanso.base = android.os.SystemClock.elapsedRealtime()
+        choronoDescanso.start()
+
+        //
     }
 }

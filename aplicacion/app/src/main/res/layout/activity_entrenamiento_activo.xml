@@ -25,6 +25,35 @@
         android:layout_marginBottom="16dp"
         />
 
+    <LinearLayout
+        android:id="@+id/llDescanso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center"
+        android:background="#E8F5E9"
+        android:padding="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TIEMPO RECUPERACION"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#2E7D32"/>
+
+        <Chronometer
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chronoDescanso"
+            android:textSize="32sp"
+            android:textColor="#4CAF50"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
