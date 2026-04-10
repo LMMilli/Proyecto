@@ -1,128 +1,71 @@
 package com.gymprogress.api.controller;
 
 import com.gymprogress.api.dto.EntrenamientoRequest;
-import com.gymprogress.api.dto.SerieRequest;
-import com.gymprogress.api.model.*;
-import com.gymprogress.api.repository.*;
+import com.gymprogress.api.model.Entrenamiento;
+import com.gymprogress.api.repository.EntrenamientoRepository;
+import com.gymprogress.api.service.EntrenamientoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Controlador REST principal para la gestión de las sesiones de entrenamiento.
- * Se encarga de registrar nuevos entrenamientos con sus respectivas series,
- * así como de devolver el historial de actividad de los usuarios.
+ * Delega la lógica de guardado complejo al Servicio y gestiona las respuestas HTTP.
  */
-@RestController // Define la clase como controlador de la API RESTful
-@RequestMapping("/api/entrenamientos") // Ruta base para los endpoints de entrenamientos
+@RestController
+@RequestMapping("/api/entrenamientos")
 public class EntrenamientoController {
 
-    /* * Inyección de todos los repositorios necesarios.
-     * Al guardar un entrenamiento completo, necesitamos acceder a múltiples tablas
-     * para verificar que los IDs enviados por el cliente realmente existen.
-     */
+    // 1. Inyectamos nuestro nuevo "cerebro" (el Service)
+    @Autowired
+    private EntrenamientoService entrenamientoService;
+
+    // 2. Mantenemos el repositorio SOLO para las consultas simples (GET)
     @Autowired
     private EntrenamientoRepository entrenamientoRepository;
-    @Autowired
-    private SerieRepository serieRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private RutinaRepository rutinaRepository;
-    @Autowired
-    private EjercicioRepository ejercicioRepository;
 
     /**
-     * Endpoint para registrar un entrenamiento completo junto con todas sus series.
-     * Método HTTP: POST
-     * URL: /api/entrenamientos
-     * * @param request Objeto DTO (Data Transfer Object) que contiene los datos del entrenamiento y una lista de series.
-     * @return ResponseEntity con el entrenamiento guardado o un mensaje de error si el usuario no existe.
+     * Endpoint para registrar un entrenamiento completo.
+     * La lógica compleja ahora vive en EntrenamientoService.
      */
     @PostMapping
-    public ResponseEntity<?> registarEntrenamiento(@RequestBody EntrenamientoRequest request){
+    public ResponseEntity<?> registarEntrenamiento(@Valid @RequestBody EntrenamientoRequest request) {
+        try {
+            // El controlador ya no piensa, solo le pasa el JSON de Android al Service
+            Entrenamiento entrenamientoGuardado = entrenamientoService.procesarNuevoEntrenamiento(request);
 
-        // 1. Validar que el usuario que intenta registrar el entrenamiento existe en la base de datos
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById((request.getUsuarioId()));
-        if(usuarioOpt.isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(("Error: Usuario no encontrado"));
+            // Si todo va bien, devolvemos el OK (200)
+            return ResponseEntity.ok(entrenamientoGuardado);
+
+        } catch (Exception e) {
+            // Si el Service detecta un error (ej. Usuario no existe), devuelve un Bad Request (400)
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // 2. Crear la entidad principal del Entrenamiento y asignar sus valores básicos
-        Entrenamiento entrenamiento = new Entrenamiento();
-        entrenamiento.setUsuario(usuarioOpt.get());
-        entrenamiento.setFecha(LocalDateTime.now()); // Marca de tiempo automática en el servidor
-        entrenamiento.setDuracionMinutos(request.getDuracionMinutos());
-
-        // 3. Comprobar si el entrenamiento se basa en una rutina global existente
-        if(request.getRutinaId() != null){
-            Optional<Rutina> rutinaOpt = rutinaRepository.findById((request.getRutinaId()));
-            rutinaOpt.ifPresent(entrenamiento::setRutina); // Si existe, la asocia al entrenamiento
-        }
-
-        // 4. Guardar el entrenamiento inicial para generar su ID (necesario para las series)
-        Entrenamiento entrenamientoGuardado = entrenamientoRepository.save(entrenamiento);
-
-        // 5. Procesar la lista de series recibidas en la petición
-        List<Serie> seriesGuardadas = new ArrayList<>();
-
-        for (SerieRequest serieReq : request.getSeries()) {
-            // Verificar que el ejercicio indicado en la serie existe en el catálogo
-            Optional<Ejercicio> ejercicioOpt = ejercicioRepository.findById(serieReq.getEjercicioId());
-
-            if(ejercicioOpt.isPresent()){
-                // Crear la entidad Serie y vincularla a su entrenamiento y ejercicio
-                Serie nuevaSerie = new Serie();
-                nuevaSerie.setEntrenamiento(entrenamientoGuardado);
-                nuevaSerie.setEjercicio(ejercicioOpt.get());
-                nuevaSerie.setRepeticiones(serieReq.getRepeticiones());
-                nuevaSerie.setPeso(serieReq.getPeso());
-                nuevaSerie.setRpe(serieReq.getRpe());
-
-                // Guardar la serie en la base de datos
-                serieRepository.save(nuevaSerie);
-
-                // Añadir a la lista temporal para la respuesta JSON
-                seriesGuardadas.add(nuevaSerie);
-            }
-        }
-
-        // 6. Adjuntar las series al objeto final y devolver respuesta HTTP 200 (OK)
-        entrenamientoGuardado.setSeries(seriesGuardadas);
-        return ResponseEntity.ok(entrenamientoGuardado);
     }
 
     /**
-     * Endpoint para obtener todo el historial de entrenamientos de un usuario concreto.
-     * Método HTTP: GET
-     * URL: /api/entrenamientos/usuario/{usuarioId}
-     * * @param usuarioId Identificador único del usuario (extraído de la URL).
-     * @return Lista de entrenamientos ordenados por fecha descendente.
+     * Endpoint para obtener todo el historial de entrenamientos de un usuario.
      */
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Entrenamiento>> obtenerHistorialEntrenamientos(@PathVariable Long usuarioId){
-        // Llama al método personalizado del repositorio que busca por ID y ordena de más reciente a más antiguo
+    public ResponseEntity<List<Entrenamiento>> obtenerHistorialEntrenamientos(@PathVariable Long usuarioId) {
         List<Entrenamiento> historial = entrenamientoRepository.findByUsuarioIdOrderByFechaDesc(usuarioId);
-
         return ResponseEntity.ok(historial);
     }
 
+    /**
+     * Endpoint para obtener el detalle de un entrenamiento concreto.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Entrenamiento> obtenerDetalleEntrenamiento(@PathVariable("id") Long id) {
-
         Optional<Entrenamiento> entrenamiento = entrenamientoRepository.findById(id);
 
         if (entrenamiento.isPresent()) {
-            // Si existe, lo devolvemos con un OK (Código 200)
             return ResponseEntity.ok(entrenamiento.get());
         } else {
-            // Si no existe, devolvemos un Not Found (Código 404)
             return ResponseEntity.notFound().build();
         }
     }

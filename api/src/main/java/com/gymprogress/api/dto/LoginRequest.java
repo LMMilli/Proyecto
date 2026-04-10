@@ -1,7 +1,16 @@
 package com.gymprogress.api.dto;
 
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
+
+    @NotBlank(message = "El email no puede estar vacío")
+    @Email(message = "El formato de email es incorrecto")
     private String email;
+
+    @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
     public LoginRequest() {

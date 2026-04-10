@@ -23,7 +23,7 @@ public class Entrenamiento {
     @JoinColumn(name = "rutina_id")
     private Rutina rutina;
 
-    @OneToMany(mappedBy = "entrenamiento")
+    @OneToMany(mappedBy = "entrenamiento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Serie> series;
 
     public Entrenamiento() {

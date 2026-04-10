@@ -4,6 +4,7 @@ import com.gymprogress.api.dto.LoginRequest;
 import com.gymprogress.api.model.Usuario;
 import com.gymprogress.api.repository.UsuarioRepository;
 import com.gymprogress.api.utils.SecurityUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +26,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    /**
-     * Endpoint para obtener la lista de todos los usuarios registrados.
-     * Método HTTP: GET
-     * URL: /api/usuarios
-     * * @return Lista completa de usuarios. (Útil para fines de administración o pruebas).
-     */
-    @GetMapping
-    public List<Usuario> findAll() {
-        // Recupera todos los registros de la tabla usuarios
-        return usuarioRepository.findAll();
-    }
 
     /**
      * Endpoint para registrar un nuevo usuario en el sistema (Sign Up).
@@ -67,7 +57,7 @@ public class UsuarioController {
      * @return ResponseEntity con los datos del usuario si hay éxito (HTTP 200), o error de credenciales (HTTP 401).
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request){
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request){
 
         // 1. Buscar en la base de datos si existe algún usuario registrado con ese email exacto
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(request.getEmail());
@@ -75,12 +65,10 @@ public class UsuarioController {
         if(usuarioOpt.isPresent()){
             Usuario usuarioBD = usuarioOpt.get();
 
-            // 2. Cifrar la contraseña que ha introducido el usuario al intentar entrar
-            String passwordCifrada = SecurityUtil.cifrarPassword(request.getPassword());
+            //Usamos el verivicado BCrypt
+            boolean esCorrecto = SecurityUtil.verificarPassword(request.getPassword(), usuarioBD.getPassword());
 
-            // 3. Comparar si el Hash de la contraseña introducida coincide con el Hash guardado en la BD
-            if(passwordCifrada.equals(usuarioBD.getPassword())){
-                // Las credenciales son válidas: devolvemos el objeto usuario (para que la app móvil guarde su ID)
+            if(esCorrecto){
                 return ResponseEntity.ok(usuarioBD);
             }
         }

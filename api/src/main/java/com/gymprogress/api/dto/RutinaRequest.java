@@ -24,7 +24,7 @@ public class RutinaRequest {
     }
 
 
-    public void setEjercicioIds() {
+    public void setEjercicioIds(List<Long> ejercicioIds) {
         this.ejercicioIds = ejercicioIds;
     }
 

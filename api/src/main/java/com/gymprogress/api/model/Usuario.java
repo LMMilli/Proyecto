@@ -15,6 +15,7 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore //Evita que la calve salga del servidor
     private String password;
 
     private String nombre;
