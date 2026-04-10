@@ -15,15 +15,33 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
-    <Chronometer
-        android:id="@+id/cronometroEntrenamiento"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="36sp"
-        android:textColor="#4CAF50"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"
-        />
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Chronometer
+            android:id="@+id/cronometroEntrenamiento"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="36sp"
+            android:textColor="#4CAF50"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            />
+
+        <Button
+            android:id="@+id/btnAbrirCalculadora"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Cacl. 1RM"
+            android:textColor="#2196F3"
+            />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/llDescanso"
@@ -52,6 +70,16 @@
             android:textSize="32sp"
             android:textColor="#4CAF50"
             android:textStyle="bold"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnTerminarDescanso"
+            android:text="VOLVER A ENTRENAR"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#4CAF50"
+            style="?android:attr/borderlessButtonStyle"/>
     </LinearLayout>
 
     <Button
