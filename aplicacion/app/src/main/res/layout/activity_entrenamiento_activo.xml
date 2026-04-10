@@ -15,33 +15,35 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:layout_marginBottom="16sp">
 
         <Chronometer
             android:id="@+id/cronometroEntrenamiento"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="36sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textColor="#4CAF50"
+            android:textSize="36sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp"
-            />
+            android:textAlignment="center"/>
 
         <Button
             android:id="@+id/btnAbrirCalculadora"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Cacl. 1RM"
-            android:textColor="#2196F3"
-            />
+            android:textAlignment="center"
+            android:textColor="#2196F3" />
 
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/llDescanso"
