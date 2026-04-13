@@ -5,5 +5,5 @@ data class Serie(
     val repeticiones: Int,
     val peso: Double,
     val rpe: Int,
-    val ejercicioId: Long
+    val tipo: String?
 )

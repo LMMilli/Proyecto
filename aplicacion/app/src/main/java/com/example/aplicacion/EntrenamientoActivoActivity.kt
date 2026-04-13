@@ -84,7 +84,10 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         cargarEjerciciosDelServidor()
 
         findViewById<Button>(R.id.btnAgregarEjercicioEntrenamiento).setOnClickListener {
-            if (listaEjerciciosDisponibles.isEmpty()) return@setOnClickListener
+            if (listaEjerciciosDisponibles.isEmpty()){
+                Toast.makeText(this, "Aún cargando o no hay ejercicios en la BD...", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             mostrarBuscadorDeEjercicios()
         }
 
@@ -102,6 +105,9 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
 
                     listaEjerciciosDisponibles = response.body()!!.filterNotNull()
+
+                    Toast.makeText(this@EntrenamientoActivoActivity,
+                        "Cargados ${listaEjerciciosDisponibles.size} ejercicios", Toast.LENGTH_SHORT).show()
 
                     val idsParaInyectar = idsEjercicioRutina
 
@@ -142,7 +148,13 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Ejercicio>>, t: Throwable) {}
+            override fun onFailure(call: Call<List<Ejercicio>>, t: Throwable) {
+                Toast.makeText(
+                    this@EntrenamientoActivoActivity,
+                    "🚨 Error de conexión: ${t.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         })
     }
 
@@ -238,6 +250,37 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 , Toast.LENGTH_SHORT).show()
             return
         }
+
+        cronometro.stop()
+        val tiempoTranscurridoMilis = android.os.SystemClock.elapsedRealtime() - cronometro.base
+        val minutosDuracion = (tiempoTranscurridoMilis/6000).toInt()
+
+        //5. Creamos el obejti final
+        val request = EntrenamientoRequest(
+            usuarioId = idUsuario,
+            rutinaId = idRutinaAsignada,
+            duracionMinutos = minutosDuracion,
+            ejercicios = todosLosBloquesFinales
+        )
+
+        //Enviamos el entrenamiento a la base de datos
+
+        apiService.guardarEntrenamiento(request).enqueue(object : Callback<Void>{
+            override fun onResponse(call: Call<Void>, response: Response<Void>){
+                if (response.isSuccessful){
+                    Toast.makeText(this@EntrenamientoActivoActivity, "Entrenamiento guardado",
+                        Toast.LENGTH_SHORT).show()
+                    finish()
+                }else{
+                    Toast.makeText(this@EntrenamientoActivoActivity, "Error: \${response.code()}\""
+                        , Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<Void>, t: Throwable){
+                Toast.makeText(this@EntrenamientoActivoActivity, "Error de conexion",
+                    Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun iniciarCronometroDescanso() {

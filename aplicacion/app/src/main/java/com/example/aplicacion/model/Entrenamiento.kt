@@ -5,6 +5,5 @@ data class Entrenamiento(
     val duracion: Int,
     val fecha: String,
     val rutinaId: Int? = null,
-    val usuarioId: Int,
-    val series: List<Serie>?= null
+    val ejerciciosEntrenamiento: List<EjercicioEntrenamiento>?= emptyList()
 )
