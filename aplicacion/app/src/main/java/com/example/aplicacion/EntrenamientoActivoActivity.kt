@@ -14,6 +14,7 @@ import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.DetalleEntrenamientoRequest
 import com.example.aplicacion.model.Ejercicio
+import com.example.aplicacion.model.EjercicioEntrenamientoRequest
 import com.example.aplicacion.model.EntrenamientoRequest
 import com.example.aplicacion.model.SerieRequest
 import retrofit2.Call
@@ -186,16 +187,20 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     }
 
     private fun guardarEntrenamiento() {
-        val todasLasSeriesFinales = mutableListOf<SerieRequest>()
+        //Creamos una lista de Bloques EjercicioEntrenamientoRequest
+        val todosLosBloquesFinales = mutableListOf<EjercicioEntrenamientoRequest>()
+        var ordenActual = 1
 
-        //1. Recorremos cada TARJETA DE EJERCICIO
-        for (tarjeta in tarjetasEnPantalla) {
-            val contenedorDeSeries =
-                tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+        //Reccorremos cada tarjeta de ejercicio en la pantalla
+        for (tarjeta in tarjetasEnPantalla){
+            val contenedorDeSeries = tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
 
-            //2.Dentro de esa tarjeta, recorremos CADA FILA DE SERIE que haya creado el usuari
-            for (i in 0 until contenedorDeSeries.childCount) {
-                val filaSerie = contenedorDeSeries.getChildAt(i)//Pillamos la fila visual
+            //Creamos una lista temporal solo para las series de esta tarjeta
+            val seriesDeEstaTarjeta = mutableListOf<SerieRequest>()
+
+            //Dentro de esta tarjeta, recorremos cada fila de serie
+            for (i in 0 until contenedorDeSeries.childCount){
+                val filaSerie = contenedorDeSeries.getChildAt(i)
 
                 val etReps = filaSerie.findViewById<EditText>(R.id.etRepsSerie)
                 val etPeso = filaSerie.findViewById<EditText>(R.id.etPesoSerie)
@@ -205,63 +210,34 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 val peso = etPeso.text.toString().toDoubleOrNull()
                 val rpe = etRpe.text.toString().toIntOrNull()
 
-                //Si ha rellenado algo, lo guardamos como UNA serie en la base de datos
-                if (reps != null || peso != null) {
+                if(reps !=null || peso !=null){
                     val nuevaSerie = SerieRequest(
-                        ejercicioId = tarjeta.ejercicioId,
                         repeticiones = reps ?: 0,
                         peso = peso ?: 0.0,
-                        rpe = rpe ?: 0
+                        rpe = rpe ?: 0,
+                        tipo = "Efectiva" //Opcional
                     )
-                    todasLasSeriesFinales.add(nuevaSerie)
+                    seriesDeEstaTarjeta.add(nuevaSerie)
                 }
             }
-        }
-        if (todasLasSeriesFinales.isEmpty()) {
-            Toast.makeText(
-                this, "Entrena algo CABRON",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        cronometro.stop()
-
-
-        //Calculamos la duraccion aproximada en minutos
-        val tiempoTranscurridoMilis = android.os.SystemClock.elapsedRealtime() - cronometro.base
-        val minutosDuracion = (tiempoTranscurridoMilis / 60000).toInt()
-
-        //Creamos el objeto final
-        val request = EntrenamientoRequest(
-            usuarioId = idUsuario,
-            rutinaId = idRutinaAsignada,
-            duracionMinutos = minutosDuracion,
-            series = todasLasSeriesFinales
-        )
-
-        apiService.guardarEntrenamiento(request).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(
-                        this@EntrenamientoActivoActivity, "Entrenamiento Guardado",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    finish()
-                } else {
-                    Toast.makeText(
-                        this@EntrenamientoActivoActivity, "Error en la base de datos",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            // Si el usuario relleno alugna serie en la tarjeta creamos el bloque
+            if(seriesDeEstaTarjeta.isNotEmpty()){
+                val nuevoBloque = EjercicioEntrenamientoRequest(
+                    ejercicioId = tarjeta.ejercicioId,
+                    equipamientoId = null, //Hasta modificar la tarjeta
+                    orden = ordenActual,
+                    notas = "",
+                    series = seriesDeEstaTarjeta
+                )
+                todosLosBloquesFinales.add(nuevoBloque)
+                ordenActual++
             }
-
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Toast.makeText(
-                    this@EntrenamientoActivoActivity, "Error de conexion",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+        }
+        if(todosLosBloquesFinales.isEmpty()){
+            Toast.makeText(this, "Entrrena algo CABRON"
+                , Toast.LENGTH_SHORT).show()
+            return
+        }
     }
 
     private fun iniciarCronometroDescanso() {

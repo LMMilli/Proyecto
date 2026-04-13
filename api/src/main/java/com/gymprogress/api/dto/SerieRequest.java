@@ -5,22 +5,15 @@ import jakarta.validation.constraints.NotNull;
 
 public class SerieRequest {
 
-    @NotNull(message = "Debes indicar el ID del ejercicio")
-    private Long ejercicioId;
-
     @Min(value = 1, message = "Debe haber al menos 1 repetico")
     private Integer repeticiones;
 
     @Min(value = 0, message = "No puedes levantar peso negativo mongolo")
     private Double peso;
     private Integer rpe;
+    private String tipo;
 
     public SerieRequest() {
-    }
-
-
-    public Long getEjercicioId() {
-        return ejercicioId;
     }
 
 
@@ -36,8 +29,8 @@ public class SerieRequest {
         return rpe;
     }
 
-    public void setEjercicioId(Long ejercicioId) {
-        this.ejercicioId = ejercicioId;
+    public String getTipo() {
+        return tipo;
     }
 
     public void setRepeticiones(Integer repeticiones) {
@@ -50,5 +43,9 @@ public class SerieRequest {
 
     public void setRpe(Integer rpe) {
         this.rpe = rpe;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

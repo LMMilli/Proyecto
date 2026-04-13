@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface SerieRepository extends JpaRepository<Serie, Long> {
 
-    @Query("SELECT MAX(s.peso) FROM Serie s WHERE s.entrenamiento.usuario.id = :usuarioId AND s.ejercicio.id = :ejercicioId")
+    @Query("SELECT MAX(s.peso) FROM Serie s WHERE s.ejercicioEntrenamiento.entrenamiento.usuario.id = :usuarioId AND s.ejercicioEntrenamiento.ejercicio.id = :ejercicioId")
     Double obtenerRecordDePeso(@Param("usuarioId") Long usuarioId, @Param("ejercicioId") Long ejercicioId);
 }

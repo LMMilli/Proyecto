@@ -2,6 +2,8 @@ package com.gymprogress.api.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="ejercicios")
 public class Ejercicio {
@@ -16,6 +18,14 @@ public class Ejercicio {
 
     private String descripcion;
 
+
+    @ManyToOne
+    @JoinTable(
+            name = "ejercicio_equipamiento",
+            joinColumns = @JoinColumn(name = "ejercicio_id"),
+            inverseJoinColumns = @JoinColumn(name = "equipamiento_id")
+    )
+    private List<Equipamiento> equiposDisponibles;
     public Ejercicio() {
     }
 
@@ -40,6 +50,10 @@ public class Ejercicio {
 
     public String getDescripcion() { return descripcion; }
 
+    public List<Equipamiento> getEquiposDisponibles() {
+        return equiposDisponibles;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -54,5 +68,9 @@ public class Ejercicio {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public void setEquiposDisponibles(List<Equipamiento> equiposDisponibles) {
+        this.equiposDisponibles = equiposDisponibles;
     }
 }

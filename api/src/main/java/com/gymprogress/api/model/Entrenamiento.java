@@ -24,7 +24,7 @@ public class Entrenamiento {
     private Rutina rutina;
 
     @OneToMany(mappedBy = "entrenamiento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Serie> series;
+    private List<EjercicioEntrenamiento> ejerciciosEntrenamiento;
 
     public Entrenamiento() {
     }
@@ -57,8 +57,12 @@ public class Entrenamiento {
         return rutina;
     }
 
-    public List<Serie> getSeries() {
-        return series;
+    public List<EjercicioEntrenamiento> getEjerciciosEntrenamiento() {
+        return ejerciciosEntrenamiento;
+    }
+
+    public void setEjerciciosEntrenamiento(List<EjercicioEntrenamiento> ejerciciosEntrenamiento) {
+        this.ejerciciosEntrenamiento = ejerciciosEntrenamiento;
     }
 
     public void setId(Long id) {
@@ -81,7 +85,4 @@ public class Entrenamiento {
         this.rutina = rutina;
     }
 
-    public void setSeries(List<Serie> series) {
-        this.series = series;
-    }
 }

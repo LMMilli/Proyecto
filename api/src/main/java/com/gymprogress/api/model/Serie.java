@@ -15,25 +15,16 @@ public class Serie {
     private Integer rpe;
 
     @ManyToOne
-    @JoinColumn(name = "entrenamiento_id" )
+    @JoinColumn(name = "ejercicio_entrenamiento_id")
     @JsonIgnore
-    private Entrenamiento entrenamiento;
+    private EjercicioEntrenamiento ejercicioEntrenamiento;
 
-    @ManyToOne
-    @JoinColumn(name = "ejercicio_id")
-    private Ejercicio ejercicio;
+    private String tipo;
+
 
     public Serie() {
     }
 
-    public Serie(Long id, Double peso, Integer repeticiones, Integer rpe, Entrenamiento entrenamiento, Ejercicio ejercicio) {
-        this.id = id;
-        this.peso = peso;
-        this.repeticiones = repeticiones;
-        this.rpe = rpe;
-        this.entrenamiento = entrenamiento;
-        this.ejercicio = ejercicio;
-    }
 
     public Long getId() {
         return id;
@@ -51,12 +42,12 @@ public class Serie {
         return rpe;
     }
 
-    public Entrenamiento getEntrenamiento() {
-        return entrenamiento;
+    public EjercicioEntrenamiento getEjercicioEntrenamiento() {
+        return ejercicioEntrenamiento;
     }
 
-    public Ejercicio getEjercicio() {
-        return ejercicio;
+    public String getTipo() {
+        return tipo;
     }
 
     public void setId(Long id) {
@@ -75,11 +66,11 @@ public class Serie {
         this.rpe = rpe;
     }
 
-    public void setEntrenamiento(Entrenamiento entrenamiento) {
-        this.entrenamiento = entrenamiento;
+    public void setEjercicioEntrenamiento(EjercicioEntrenamiento ejercicioEntrenamiento) {
+        this.ejercicioEntrenamiento = ejercicioEntrenamiento;
     }
 
-    public void setEjercicio(Ejercicio ejercicio) {
-        this.ejercicio = ejercicio;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

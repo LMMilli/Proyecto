@@ -4,5 +4,5 @@ data class EntrenamientoRequest(
     val usuarioId: Long,
     val rutinaId: Long?, //Puede ser nula el entrenamiento no se basa en ninguna rutina
     val duracionMinutos: Int,
-    val series: List<SerieRequest>
+    val ejercicios: List<EjercicioEntrenamientoRequest>
 )

@@ -1,11 +1,10 @@
 package com.gymprogress.api.service;
 
+
+import com.gymprogress.api.dto.EjercicioEntrenamientoRequest;
 import com.gymprogress.api.dto.EntrenamientoRequest;
 import com.gymprogress.api.dto.SerieRequest;
-import com.gymprogress.api.model.Ejercicio;
-import com.gymprogress.api.model.Entrenamiento;
-import com.gymprogress.api.model.Serie;
-import com.gymprogress.api.model.Usuario;
+import com.gymprogress.api.model.*;
 import com.gymprogress.api.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +17,23 @@ import java.util.Optional;
 
 @Service
 public class EntrenamientoService {
-
     @Autowired private EntrenamientoRepository entrenamientoRepository;
     @Autowired private SerieRepository serieRepository;
     @Autowired private UsuarioRepository usuarioRepository;
     @Autowired private RutinaRepository rutinaRepository;
     @Autowired private EjercicioRepository ejercicioRepository;
+    @Autowired private EjercicioEntrenamientoRepository ejercicioEntrenamientoRepository;
+    @Autowired private EquipamientoRepository equipamientoRepository;
 
-    //@Transactional asegura que si algo falla a medias, no se guarade basura en la base de datos
     @Transactional
     public Entrenamiento procesarNuevoEntrenamiento(EntrenamientoRequest request) throws Exception{
+
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(request.getUsuarioId());
         if(usuarioOpt.isEmpty()){
-            throw new Exception("Error: Usuario no encontrado");
+            throw new Exception("Error: Usuario no ecntrado");
         }
 
+        //1. Crear y guardar el entrenamiento base
         Entrenamiento entrenamiento = new Entrenamiento();
         entrenamiento.setUsuario(usuarioOpt.get());
         entrenamiento.setFecha(LocalDateTime.now());
@@ -43,23 +44,50 @@ public class EntrenamientoService {
         }
 
         Entrenamiento entrenamientoGuardado = entrenamientoRepository.save(entrenamiento);
-        List<Serie> seriesGuardadas = new ArrayList<>();
+        List<EjercicioEntrenamiento> bloquesGuardados = new ArrayList<>();
 
-        for (SerieRequest serieReq : request.getSeries()){
-            Optional<Ejercicio> ejercicioOpt = ejercicioRepository.findById(serieReq.getEjercicioId());
+        //2. Recorrer los bloques
+        for (EjercicioEntrenamientoRequest bloqueReq : request.getEjercicios()){
+            Optional<Ejercicio> ejercicioOpt = ejercicioRepository.findById(bloqueReq.getEjercicioId());
+
             if(ejercicioOpt.isPresent()){
-                Serie nuevaSerie = new Serie();
-                nuevaSerie.setEntrenamiento(entrenamientoGuardado);
-                nuevaSerie.setEjercicio(ejercicioOpt.get());
-                nuevaSerie.setRepeticiones(serieReq.getRepeticiones());
-                nuevaSerie.setPeso(serieReq.getPeso());
-                nuevaSerie.setRpe(serieReq.getRpe());
+                EjercicioEntrenamiento nuevoBloque = new EjercicioEntrenamiento();
+                nuevoBloque.setEntrenamiento(entrenamientoGuardado);
+                nuevoBloque.setEjercicio(ejercicioOpt.get());
+                nuevoBloque.setOrden(bloqueReq.getOrden());
+                nuevoBloque.setNotas(bloqueReq.getNotas());
 
-                serieRepository.save(nuevaSerie);
-                seriesGuardadas.add(nuevaSerie);
+                //Buscar y asignar el equipamiento
+                if(bloqueReq.getEquipamientoId() != null){
+                    equipamientoRepository.findById(bloqueReq.getEquipamientoId()).ifPresent(nuevoBloque::setEquipamiento);
+                }
+
+                //Guardar el bloque en la bd
+                EjercicioEntrenamiento bloqueGuardado = ejercicioEntrenamientoRepository.save(nuevoBloque);
+                List<Serie> seriesDelBloque = new ArrayList<>();
+
+                //Recorre las serries que van dentro de este bloque
+                for(SerieRequest serieReq : bloqueReq.getSeries()){
+                    Serie nuevaSerie = new Serie();
+                    nuevaSerie.setEjercicioEntrenamiento(bloqueGuardado);
+                    nuevaSerie.setRepeticiones(serieReq.getRepeticiones());
+                    nuevaSerie.setPeso(serieReq.getPeso());
+                    nuevaSerie.setRpe(serieReq.getRpe());
+                    nuevaSerie.setTipo(serieReq.getTipo());
+
+                    serieRepository.save(nuevaSerie);
+                    seriesDelBloque.add(nuevaSerie);
+                }
+
+                //Enganchar las series al bloque, y el bloque a la lista final
+                bloqueGuardado.setSeries(seriesDelBloque);
+                bloquesGuardados.add(bloqueGuardado);
+
             }
         }
-        entrenamientoGuardado.setSeries(seriesGuardadas);
+
+        entrenamientoGuardado.setEjerciciosEntrenamiento(bloquesGuardados);
         return entrenamientoGuardado;
     }
+
 }

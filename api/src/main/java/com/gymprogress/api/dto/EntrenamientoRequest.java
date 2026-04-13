@@ -6,7 +6,7 @@ public class EntrenamientoRequest {
     private Long usuarioId;
     private Long rutinaId;
     private Integer duracionMinutos;
-    private List<SerieRequest> series;
+    private List<EjercicioEntrenamientoRequest> ejercicios;
 
     public EntrenamientoRequest() {
     }
@@ -23,8 +23,8 @@ public class EntrenamientoRequest {
         return duracionMinutos;
     }
 
-    public List<SerieRequest> getSeries() {
-        return series;
+    public List<EjercicioEntrenamientoRequest> getEjercicios() {
+        return ejercicios;
     }
 
     public void setUsuarioId(Long usuarioId) {
@@ -39,7 +39,7 @@ public class EntrenamientoRequest {
         this.duracionMinutos = duracionMinutos;
     }
 
-    public void setSeries(List<SerieRequest> series) {
-        this.series = series;
+    public void setEjercicios(List<EjercicioEntrenamientoRequest> ejercicios) {
+        this.ejercicios = ejercicios;
     }
 }
