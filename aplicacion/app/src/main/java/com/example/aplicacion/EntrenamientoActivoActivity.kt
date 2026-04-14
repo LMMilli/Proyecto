@@ -170,26 +170,35 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     private fun crearTarjetaEjercicio(ejercicio: Ejercicio) {
         if (ejercicio.id == null) return
 
-        //1. Inflamos la tarjeta del EJERCICIO
+        // 1. Inflamos la tarjeta del EJERCICIO
         val vistaTarjeta = layoutInflater.inflate(R.layout.item_ejercicio_activo, null)
-        vistaTarjeta.findViewById<TextView>(R.id.tvNombreEjercicioItem).text = ejercicio.nombre
 
-        val contenedorDeSeries =
-            vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+        // PROTECCIÓN 1: Usar "?." para que solo asigne el texto si el TextView existe
+        val tvNombre = vistaTarjeta.findViewById<TextView>(R.id.tvNombreEjercicioItem)
+        tvNombre?.text = ejercicio.nombre
+
+        val contenedorDeSeries = vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
         val btnAnadirSerie = vistaTarjeta.findViewById<Button>(R.id.btnAgregarSerieItem)
 
-        // 2. Por defecto, le inyectamos UNA fila de serie para que pueda empezar a escribir
-        agregarFilaDeSerie(contenedorDeSeries)
-
-        //3. Configurar el boton "Añadir Serie" interno de este ejercicio
-        btnAnadirSerie.setOnClickListener {
+        // PROTECCIÓN 2: Comprobar que los contenedores y botones existen antes de usarlos
+        if (contenedorDeSeries != null) {
+            // 2. Por defecto, le inyectamos UNA fila de serie para que pueda empezar a escribir
             agregarFilaDeSerie(contenedorDeSeries)
-            iniciarCronometroDescanso()
-        }
 
-        //4. Pegamos la tarjeta completa en la pantalla principal y la guardamos
-        contendorEjercicios.addView((vistaTarjeta))
-        tarjetasEnPantalla.add(TarjetaEjercicio(vistaTarjeta, ejercicio.id))
+            // 3. Configurar el boton "Añadir Serie" interno de este ejercicio
+            btnAnadirSerie?.setOnClickListener {
+                agregarFilaDeSerie(contenedorDeSeries)
+                iniciarCronometroDescanso()
+            }
+
+            // 4. Pegamos la tarjeta completa en la pantalla principal y la guardamos
+            contendorEjercicios.addView(vistaTarjeta)
+            tarjetasEnPantalla.add(TarjetaEjercicio(vistaTarjeta, ejercicio.id))
+
+        } else {
+            // SI ENTRAS AQUÍ: Significa que el ID en el XML no coincide con R.id.llContenedorSeriesDeEsteEjercicio
+            Toast.makeText(this, "Error: No se encontró el contenedor de series en el XML", Toast.LENGTH_LONG).show()
+        }
     }
 
     //Esta funcion inyecta la fila pequea de reps/kg/rpe dentro de una Ejercicio

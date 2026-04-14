@@ -30,7 +30,7 @@ class CrearRutinaActivity : AppCompatActivity() {
 
         //Obtener los ejercicios disponibles
         apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>> {
-            override fun onResponse(call: Call<List<Ejercicio>>, response: retrofit2.Response<List<Ejercicio>>){
+            override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>){
                 if(response.isSuccessful && response.body() != null){
                     listaEjerciciosOriginal=response.body()!!
                     //Extraemos los nombre para mostrarlos en la lista

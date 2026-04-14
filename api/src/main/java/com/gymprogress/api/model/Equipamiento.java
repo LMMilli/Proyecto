@@ -2,6 +2,8 @@ package com.gymprogress.api.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "equipamiento")
 public class Equipamiento {
@@ -11,6 +13,9 @@ public class Equipamiento {
 
     @Column(unique = true, nullable = false)
     private String nombre; // "Barra", "Mancuerna", "Peso Corporal", "Banda elástica"
+
+    @ManyToMany(mappedBy = "equiposDisponibles")
+    private List<Ejercicio> ejercicios;
 
     public Long getId() {
         return id;

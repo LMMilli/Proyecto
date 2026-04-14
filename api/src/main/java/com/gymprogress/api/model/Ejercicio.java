@@ -19,13 +19,15 @@ public class Ejercicio {
     private String descripcion;
 
 
-    @ManyToOne
+    @ManyToMany
     @JoinTable(
             name = "ejercicio_equipamiento",
             joinColumns = @JoinColumn(name = "ejercicio_id"),
             inverseJoinColumns = @JoinColumn(name = "equipamiento_id")
     )
     private List<Equipamiento> equiposDisponibles;
+
+
     public Ejercicio() {
     }
 

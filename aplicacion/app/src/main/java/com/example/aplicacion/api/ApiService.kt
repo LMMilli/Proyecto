@@ -3,6 +3,7 @@ package com.example.aplicacion.api
 import com.example.aplicacion.model.Ejercicio
 import com.example.aplicacion.model.Entrenamiento
 import com.example.aplicacion.model.EntrenamientoRequest
+import com.example.aplicacion.model.Equipamiento
 import com.example.aplicacion.model.LoginRequest
 import com.example.aplicacion.model.Medida
 import com.example.aplicacion.model.MedidaRequest
@@ -49,4 +50,7 @@ interface ApiService {
 
     @GET("api/entrenamientos/{id}")
     fun obtenerDetallesEntrenamiento(@Path("id") idEntrenamiento: Long): Call<Entrenamiento>
+
+    @GET("api/equipamiento")
+    fun obtenerTodosEquipamientos () : Call<List<Equipamiento>>
 }
