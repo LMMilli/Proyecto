@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.aplicacion.api.ApiClient
@@ -27,6 +28,12 @@ class CrearRutinaActivity : AppCompatActivity() {
         val btnGuarda = findViewById<Button>(R.id.btnGuardarRutina)
 
         val apiService = ApiClient.retrofit.create(ApiService::class.java)
+
+        val spinner = findViewById<Spinner>(R.id.spDificultad)
+
+
+
+
 
         //Obtener los ejercicios disponibles
         apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>> {

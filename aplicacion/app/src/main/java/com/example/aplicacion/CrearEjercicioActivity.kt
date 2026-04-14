@@ -62,6 +62,15 @@ class CrearEjercicioActivity : AppCompatActivity() {
             val descripcion = etDescripcion.text.toString().trim()
 
 
+            val equipamientoMarcado = mutableListOf<Equipamiento>()
+            val posicionesMarcadas = lvEquipamiento.checkedItemPositions
+
+            for(i in 0 until lvEquipamiento.count){
+                if (posicionesMarcadas.get(i)){
+                    val auxEquipamiento = listaEquipamiento[i]
+                    equipamientoMarcado.add(auxEquipamiento)
+                }
+            }
 
 
             if(ejercicio.isEmpty() || grupo.isEmpty()){
@@ -70,7 +79,7 @@ class CrearEjercicioActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             //Objeto Ejercicio. El ID se deja vacio porue lo genera el servidor
-            val nuevoEjercicio = Ejercicio(nombre = ejercicio, grupoMuscular = grupo, descripcion = descripcion, equipamiento = listaEquipamiento)
+            val nuevoEjercicio = Ejercicio(nombre = ejercicio, grupoMuscular = grupo, descripcion = descripcion, equipamiento = equipamientoMarcado)
 
             //Enviar al Spring Boot
             apiService.crearEjercicio(nuevoEjercicio).enqueue(object : Callback<Ejercicio>{
