@@ -1,8 +1,10 @@
 package com.gymprogress.api.controller;
 
+import com.gymprogress.api.dto.AuthResponse;
 import com.gymprogress.api.dto.LoginRequest;
 import com.gymprogress.api.model.Usuario;
 import com.gymprogress.api.repository.UsuarioRepository;
+import com.gymprogress.api.utils.JwtUtil;
 import com.gymprogress.api.utils.SecurityUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,6 +26,9 @@ public class UsuarioController {
     /* * Inyección de dependencia para acceder a la tabla de usuarios en la base de datos. */
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     /**
@@ -65,11 +69,22 @@ public class UsuarioController {
         if(usuarioOpt.isPresent()){
             Usuario usuarioBD = usuarioOpt.get();
 
+            System.out.println("--- DEBUG LOGIN ---");
+            System.out.println("Email enviado: [" + request.getEmail() + "]");
+            System.out.println("Password plana enviada: [" + request.getPassword() + "]");
+            System.out.println("Hash en BD: [" + usuarioBD.getPassword() + "]");
+
             //Usamos el verivicado BCrypt
             boolean esCorrecto = SecurityUtil.verificarPassword(request.getPassword(), usuarioBD.getPassword());
 
+            System.out.println("¿Coinciden?: " + esCorrecto);
+            System.out.println("-------------------");
+
+
             if(esCorrecto){
-                return ResponseEntity.ok(usuarioBD);
+                String tokenGenerado = jwtUtil.generarToken(usuarioBD.getEmail());
+                AuthResponse respuesta = new AuthResponse(tokenGenerado, usuarioBD);
+                return ResponseEntity.ok(respuesta);
             }
         }
 

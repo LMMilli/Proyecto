@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/api/equipamiento")
 public class EquipamientoController {
     @Autowired
-    private EquipamientoRepository entrenamientoRepository;
+    private EquipamientoRepository equipamientoRepository;
 
     @GetMapping
     public List<Equipamiento> findAll(){
-        return entrenamientoRepository.findAll();
+        return equipamientoRepository.findAll();
     }
 }

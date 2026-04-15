@@ -18,6 +18,24 @@
         android:textColor="#2196F3"
         android:layout_marginBottom="8dp"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etNotasEjercicio"
+        android:hint="Añaidr notas (ej. Rango de movimiento completo)"
+        android:textSize="14sp"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="8dp"
+        android:background="#F5F5F5"
+        android:padding="8dp"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerEquipamiento"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#2196F3"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

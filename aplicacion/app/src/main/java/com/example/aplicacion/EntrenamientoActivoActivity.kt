@@ -2,10 +2,12 @@ package com.example.aplicacion
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Chronometer
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -16,6 +18,7 @@ import com.example.aplicacion.model.DetalleEntrenamientoRequest
 import com.example.aplicacion.model.Ejercicio
 import com.example.aplicacion.model.EjercicioEntrenamientoRequest
 import com.example.aplicacion.model.EntrenamientoRequest
+import com.example.aplicacion.model.Equipamiento
 import com.example.aplicacion.model.SerieRequest
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,6 +43,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
     private lateinit var btnTerminarDescanso: Button
     private lateinit var choronoDescanso: Chronometer
+    private var listaEquipamiento: List<Equipamiento> = emptyList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrenamiento_activo)
@@ -54,6 +58,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
         val idRutina = intent.getLongExtra("ID_RUTINA", -1L)
 
+        cargarEquipamientos()
 
         findViewById<Button>(R.id.btnAbrirCalculadora).setOnClickListener {
             Toast.makeText(
@@ -180,6 +185,16 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         val contenedorDeSeries = vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
         val btnAnadirSerie = vistaTarjeta.findViewById<Button>(R.id.btnAgregarSerieItem)
 
+        val spinnerEquip = vistaTarjeta.findViewById<Spinner>(R.id.spinnerEquipamiento)
+
+        val listaParaSpinner = mutableListOf<Equipamiento>()
+        listaParaSpinner.add(Equipamiento(-1L, "Seleccionar equipamiento..."))
+        listaParaSpinner.addAll(listaEquipamiento)
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listaParaSpinner)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerEquip.adapter = adapter
+
         // PROTECCIÓN 2: Comprobar que los contenedores y botones existen antes de usarlos
         if (contenedorDeSeries != null) {
             // 2. Por defecto, le inyectamos UNA fila de serie para que pueda empezar a escribir
@@ -214,10 +229,22 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         //Reccorremos cada tarjeta de ejercicio en la pantalla
         for (tarjeta in tarjetasEnPantalla){
+            val etNotas = tarjeta.vistaTarjeta.findViewById<EditText>(R.id.etNotasEjercicio)
+            val spinnerEquip = tarjeta.vistaTarjeta.findViewById<Spinner>(R.id.spinnerEquipamiento)
             val contenedorDeSeries = tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+
+            val notasTexto = etNotas.textColors.toString().trim()
+            val notasFinales = if (notasTexto.isNotEmpty()) notasTexto else null
+
+
+            val equipamientoSeleccionado = spinnerEquip.selectedItem as? Equipamiento
+            val equipamientoIdFianl = equipamientoSeleccionado?.id
+
 
             //Creamos una lista temporal solo para las series de esta tarjeta
             val seriesDeEstaTarjeta = mutableListOf<SerieRequest>()
+
+
 
             //Dentro de esta tarjeta, recorremos cada fila de serie
             for (i in 0 until contenedorDeSeries.childCount){
@@ -245,9 +272,9 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
             if(seriesDeEstaTarjeta.isNotEmpty()){
                 val nuevoBloque = EjercicioEntrenamientoRequest(
                     ejercicioId = tarjeta.ejercicioId,
-                    equipamientoId = null, //Hasta modificar la tarjeta
+                    equipamientoId = equipamientoIdFianl, //Hasta modificar la tarjeta
                     orden = ordenActual,
-                    notas = "",
+                    notas = notasFinales,
                     series = seriesDeEstaTarjeta
                 )
                 todosLosBloquesFinales.add(nuevoBloque)
@@ -262,7 +289,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         cronometro.stop()
         val tiempoTranscurridoMilis = android.os.SystemClock.elapsedRealtime() - cronometro.base
-        val minutosDuracion = (tiempoTranscurridoMilis/6000).toInt()
+        val minutosDuracion = (tiempoTranscurridoMilis/60000).toInt()
 
         //5. Creamos el obejti final
         val request = EntrenamientoRequest(
@@ -365,5 +392,22 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         }
 
         dialogo.show()
+    }
+
+    private fun cargarEquipamientos(){
+        apiService.obtenerTodosEquipamientos().enqueue(object : Callback<List<Equipamiento>> {
+            override fun onResponse(call: Call<List<Equipamiento>>, response: Response<List<Equipamiento>>){
+                if(response.isSuccessful && response.body() != null){
+                    listaEquipamiento = response.body()!!
+                }else{
+                    Toast.makeText(this@EntrenamientoActivoActivity, "No hay equipamientos",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<List<Equipamiento>>, t: Throwable){
+                Toast.makeText(this@EntrenamientoActivoActivity, "Error al cargar los equipamientos",
+                    Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

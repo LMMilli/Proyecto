@@ -56,4 +56,6 @@ dependencies {
 
     //
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
+
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }
