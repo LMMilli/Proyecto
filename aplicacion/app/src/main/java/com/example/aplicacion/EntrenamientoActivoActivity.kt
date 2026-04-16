@@ -55,6 +55,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         cronometro.base = android.os.SystemClock.elapsedRealtime()
         cronometro.start()
 
+        apiService = ApiClient.retrofit.create(ApiService::class.java)
+
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
         val idRutina = intent.getLongExtra("ID_RUTINA", -1L)
 
@@ -83,14 +85,18 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 idsEjercicioRutina = textoIds.split(",").mapNotNull { it.toLongOrNull() }
             }
         }
-        apiService = ApiClient.retrofit.create(ApiService::class.java)
+
         contendorEjercicios = findViewById(R.id.llContendorEjercicios)
 
         cargarEjerciciosDelServidor()
 
         findViewById<Button>(R.id.btnAgregarEjercicioEntrenamiento).setOnClickListener {
-            if (listaEjerciciosDisponibles.isEmpty()){
-                Toast.makeText(this, "Aún cargando o no hay ejercicios en la BD...", Toast.LENGTH_SHORT).show()
+            if (listaEjerciciosDisponibles.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Aún cargando o no hay ejercicios en la BD...",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
             mostrarBuscadorDeEjercicios()
@@ -111,8 +117,10 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
                     listaEjerciciosDisponibles = response.body()!!.filterNotNull()
 
-                    Toast.makeText(this@EntrenamientoActivoActivity,
-                        "Cargados ${listaEjerciciosDisponibles.size} ejercicios", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity,
+                        "Cargados ${listaEjerciciosDisponibles.size} ejercicios", Toast.LENGTH_SHORT
+                    ).show()
 
                     val idsParaInyectar = idsEjercicioRutina
 
@@ -182,7 +190,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         val tvNombre = vistaTarjeta.findViewById<TextView>(R.id.tvNombreEjercicioItem)
         tvNombre?.text = ejercicio.nombre
 
-        val contenedorDeSeries = vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+        val contenedorDeSeries =
+            vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
         val btnAnadirSerie = vistaTarjeta.findViewById<Button>(R.id.btnAgregarSerieItem)
 
         val spinnerEquip = vistaTarjeta.findViewById<Spinner>(R.id.spinnerEquipamiento)
@@ -212,7 +221,11 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         } else {
             // SI ENTRAS AQUÍ: Significa que el ID en el XML no coincide con R.id.llContenedorSeriesDeEsteEjercicio
-            Toast.makeText(this, "Error: No se encontró el contenedor de series en el XML", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                "Error: No se encontró el contenedor de series en el XML",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -228,12 +241,13 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         var ordenActual = 1
 
         //Reccorremos cada tarjeta de ejercicio en la pantalla
-        for (tarjeta in tarjetasEnPantalla){
+        for (tarjeta in tarjetasEnPantalla) {
             val etNotas = tarjeta.vistaTarjeta.findViewById<EditText>(R.id.etNotasEjercicio)
             val spinnerEquip = tarjeta.vistaTarjeta.findViewById<Spinner>(R.id.spinnerEquipamiento)
-            val contenedorDeSeries = tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+            val contenedorDeSeries =
+                tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
 
-            val notasTexto = etNotas.textColors.toString().trim()
+            val notasTexto = etNotas.text.toString().trim()
             val notasFinales = if (notasTexto.isNotEmpty()) notasTexto else null
 
 
@@ -245,9 +259,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
             val seriesDeEstaTarjeta = mutableListOf<SerieRequest>()
 
 
-
             //Dentro de esta tarjeta, recorremos cada fila de serie
-            for (i in 0 until contenedorDeSeries.childCount){
+            for (i in 0 until contenedorDeSeries.childCount) {
                 val filaSerie = contenedorDeSeries.getChildAt(i)
 
                 val etReps = filaSerie.findViewById<EditText>(R.id.etRepsSerie)
@@ -258,7 +271,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 val peso = etPeso.text.toString().toDoubleOrNull()
                 val rpe = etRpe.text.toString().toIntOrNull()
 
-                if(reps !=null || peso !=null){
+                if (reps != null || peso != null) {
                     val nuevaSerie = SerieRequest(
                         repeticiones = reps ?: 0,
                         peso = peso ?: 0.0,
@@ -269,7 +282,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 }
             }
             // Si el usuario relleno alugna serie en la tarjeta creamos el bloque
-            if(seriesDeEstaTarjeta.isNotEmpty()){
+            if (seriesDeEstaTarjeta.isNotEmpty()) {
                 val nuevoBloque = EjercicioEntrenamientoRequest(
                     ejercicioId = tarjeta.ejercicioId,
                     equipamientoId = equipamientoIdFianl, //Hasta modificar la tarjeta
@@ -281,15 +294,16 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 ordenActual++
             }
         }
-        if(todosLosBloquesFinales.isEmpty()){
-            Toast.makeText(this, "Entrrena algo CABRON"
-                , Toast.LENGTH_SHORT).show()
+        if (todosLosBloquesFinales.isEmpty()) {
+            Toast.makeText(
+                this, "Entrrena algo CABRON", Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         cronometro.stop()
         val tiempoTranscurridoMilis = android.os.SystemClock.elapsedRealtime() - cronometro.base
-        val minutosDuracion = (tiempoTranscurridoMilis/60000).toInt()
+        val minutosDuracion = (tiempoTranscurridoMilis / 60000).toInt()
 
         //5. Creamos el obejti final
         val request = EntrenamientoRequest(
@@ -301,20 +315,28 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         //Enviamos el entrenamiento a la base de datos
 
-        apiService.guardarEntrenamiento(request).enqueue(object : Callback<Void>{
-            override fun onResponse(call: Call<Void>, response: Response<Void>){
-                if (response.isSuccessful){
-                    Toast.makeText(this@EntrenamientoActivoActivity, "Entrenamiento guardado",
-                        Toast.LENGTH_SHORT).show()
+        apiService.guardarEntrenamiento(request).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity, "Entrenamiento guardado",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
-                }else{
-                    Toast.makeText(this@EntrenamientoActivoActivity, "Error: \${response.code()}\""
-                        , Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity,
+                        "Error: \${response.code()}\"",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            override fun onFailure(call: Call<Void>, t: Throwable){
-                Toast.makeText(this@EntrenamientoActivoActivity, "Error de conexion",
-                    Toast.LENGTH_SHORT).show()
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(
+                    this@EntrenamientoActivoActivity, "Error de conexion",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -394,19 +416,27 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         dialogo.show()
     }
 
-    private fun cargarEquipamientos(){
+    private fun cargarEquipamientos() {
         apiService.obtenerTodosEquipamientos().enqueue(object : Callback<List<Equipamiento>> {
-            override fun onResponse(call: Call<List<Equipamiento>>, response: Response<List<Equipamiento>>){
-                if(response.isSuccessful && response.body() != null){
+            override fun onResponse(
+                call: Call<List<Equipamiento>>,
+                response: Response<List<Equipamiento>>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
                     listaEquipamiento = response.body()!!
-                }else{
-                    Toast.makeText(this@EntrenamientoActivoActivity, "No hay equipamientos",
-                        Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity, "No hay equipamientos",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            override fun onFailure(call: Call<List<Equipamiento>>, t: Throwable){
-                Toast.makeText(this@EntrenamientoActivoActivity, "Error al cargar los equipamientos",
-                    Toast.LENGTH_SHORT).show()
+
+            override fun onFailure(call: Call<List<Equipamiento>>, t: Throwable) {
+                Toast.makeText(
+                    this@EntrenamientoActivoActivity, "Error al cargar los equipamientos",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }

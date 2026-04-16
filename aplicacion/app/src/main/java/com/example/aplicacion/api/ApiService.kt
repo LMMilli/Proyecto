@@ -1,5 +1,6 @@
 package com.example.aplicacion.api
 
+import com.example.aplicacion.model.AuthResponse
 import com.example.aplicacion.model.Ejercicio
 import com.example.aplicacion.model.Entrenamiento
 import com.example.aplicacion.model.EntrenamientoRequest
@@ -19,7 +20,7 @@ interface ApiService {
     //Petcion POST a la ruta de UsuarioController
 
     @POST("api/usuarios/login")
-    fun longin(@Body request: LoginRequest): Call<Usuario>
+    fun login(@Body request: LoginRequest): Call<AuthResponse>
 
     @POST("api/usuarios")
     fun registrarUsuario(@Body request: RegistroRequest): Call<Usuario>

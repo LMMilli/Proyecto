@@ -1,5 +1,6 @@
 package com.example.aplicacion
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -16,13 +17,14 @@ class HomeActivity : AppCompatActivity() {
         val btnRutinas = findViewById<Button>(R.id.btnCatalogoRutinas)
         val btnMedidas = findViewById<Button>(R.id.btnMisMedidas)
         val btnAdmin = findViewById<Button>(R.id.btnPalenAdmin)
+        val tokenManager = TokenManager(MyApp.appContext)
+        val btnLogout = findViewById<Button>(R.id.btnLogout)
+
 
         //Abrimos intent para sacor los datos del usuario
-        val nombre = intent.getStringExtra("NOMBRE_USUARIO") ?: "Atleta"
-
-        val idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
-
-        val email = intent.getStringExtra("EMAIL_USUARIO") ?: ""
+        val nombre = tokenManager.getUserName()
+        val idUsuario = tokenManager.getUserId()
+        val email = tokenManager.getUserEmail()
         val emailAdim = "millimermar@gmail.com"
 
 
@@ -56,6 +58,19 @@ class HomeActivity : AppCompatActivity() {
         btnAdmin.setOnClickListener {
             val intent = android.content.Intent(this, AdminActivity::class.java)
             startActivity(intent)
+        }
+
+        btnLogout.setOnClickListener {
+            //Vaciamos la caja fuerte
+            tokenManager.clearAll()
+
+            val intent = Intent(this@HomeActivity, LoginActivity::class.java)
+
+            //Limpiemos la pila de actividades
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            startActivity(intent)
+            finish()
         }
 
     }

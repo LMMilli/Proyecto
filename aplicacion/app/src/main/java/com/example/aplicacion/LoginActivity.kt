@@ -1,5 +1,6 @@
 package com.example.aplicacion
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
+import com.example.aplicacion.model.AuthResponse
 import com.example.aplicacion.model.LoginRequest
 import com.example.aplicacion.model.Usuario
 import retrofit2.Callback
@@ -17,6 +19,18 @@ import retrofit2.Call
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Istaciamos el Token Manager
+        val tokenManager = TokenManager(MyApp.appContext)
+
+        //Comprobamos si hay un token guardado
+        if (tokenManager.getToken() != null){
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_login)
 
         //Enlazmos las variables con los item de la pantalla
@@ -43,24 +57,33 @@ class LoginActivity : AppCompatActivity() {
             val loginRequest = LoginRequest(email, password)
 
             //Eviamos la peticon POST al servidor en segundo plano
-            apiService.longin(loginRequest).enqueue(object : Callback<Usuario>{
+            apiService.login(loginRequest).enqueue(object : Callback<AuthResponse>{
                 //Si el servidor responde tanto un OK como un error
-                override fun onResponse(call : Call<Usuario>, response: Response<Usuario>){
-                    if(response.isSuccessful){
+                override fun onResponse(call : Call<AuthResponse>, response: Response<AuthResponse>){
+                    if(response.isSuccessful && response.body() != null){
                         //Funciona el Login
-                        val usuarioLogueado = response.body()
-                        Toast.makeText(this@LoginActivity, "Bienvendio ${usuarioLogueado?.nombre}!",
+                        val authResponse = response.body()!!
+
+                        //Guardamos el token en la caja fuerte
+                        val tokenManager = TokenManager(MyApp.appContext)
+                        tokenManager.saveToken(authResponse.token)
+
+                        //Extraemos el usuario
+                        val usuarioLogueado = authResponse.usuario
+
+                        tokenManager.saveUserDAta(
+                            id = usuarioLogueado.id,
+                            nombre = usuarioLogueado.nombre,
+                            email = usuarioLogueado.email
+                        )
+
+                        Toast.makeText(this@LoginActivity, "Bienvenido ${usuarioLogueado.nombre}!",
                             Toast.LENGTH_LONG).show()
 
-                        //Vamos a la HomeActivity
-                        intent = android.content.Intent(this@LoginActivity, HomeActivity::class.java)
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
 
-                        //Le añadimos los datos del usuario
-                        intent.putExtra("NOMBRE_USUARIO", usuarioLogueado?.nombre)
-                        intent.putExtra("ID_USUARIO", usuarioLogueado?.id)
-                        intent.putExtra("EMAIL_USUARIO", usuarioLogueado?.email)
                         startActivity(intent)
-                        finish()//Se cirra la el login para que el usuario si le da para atras no vuelva al login iuu
+                        finish()
 
                     }else{
                         //No funciona
@@ -68,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG).show()
                     }
                 }
-                override fun onFailure(call: Call<Usuario>, t: Throwable){
+                override fun onFailure(call: Call<AuthResponse>, t: Throwable){
                     Toast.makeText(this@LoginActivity, "Error de conexión",
                         Toast.LENGTH_LONG).show()
                 }
@@ -79,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
         //Fucion no tines cuenta
         tvRegistro.setOnClickListener {
             //Pantalla de registro
-            val intent = android.content.Intent(this, RegistroActivity::class.java)
+            val intent = Intent(this, RegistroActivity::class.java)
             startActivity(intent)
         }
 
