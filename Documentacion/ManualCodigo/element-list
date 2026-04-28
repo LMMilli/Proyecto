@@ -1,1 +1,7 @@
+com.gymprogress.api
 com.gymprogress.api.controller
+com.gymprogress.api.dto
+com.gymprogress.api.model
+com.gymprogress.api.repository
+com.gymprogress.api.service
+com.gymprogress.api.utils

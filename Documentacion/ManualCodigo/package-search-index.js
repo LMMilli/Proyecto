@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"com.gymprogress.api.controller"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"com.gymprogress.api"},{"l":"com.gymprogress.api.controller"},{"l":"com.gymprogress.api.dto"},{"l":"com.gymprogress.api.model"},{"l":"com.gymprogress.api.repository"},{"l":"com.gymprogress.api.service"},{"l":"com.gymprogress.api.utils"}];updateSearchResults();
