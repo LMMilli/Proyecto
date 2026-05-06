@@ -1,11 +1,15 @@
 package com.gymprogress.api.controller;
 
+import com.gymprogress.api.dto.EjercicioRequest;
+import com.gymprogress.api.dto.EquipamientoRequest;
 import com.gymprogress.api.model.Ejercicio;
+import com.gymprogress.api.model.Equipamiento;
 import com.gymprogress.api.repository.EjercicioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controlador REST para la gestión del catálogo de Ejercicios.
@@ -33,9 +37,13 @@ public class EjercicioController {
      * @return Una lista (List) que contiene todos los objetos de tipo {@link Ejercicio} almacenados en la base de datos.
      */
     @GetMapping // Mapea específicamente las peticiones de tipo HTTP GET a este método.
-    public List<Ejercicio> findAll() {
+    public List<EjercicioRequest> findAll() {
         // Delega la operación al repositorio, ejecutando internamente un "SELECT * FROM ejercicios"
-        return ejercicioRepository.findAll();
+        List<Ejercicio> ejercicios = ejercicioRepository.findAll();
+
+        return ejercicios.stream()
+                .map(this::convertirAEjercicioDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -48,10 +56,38 @@ public class EjercicioController {
      * @return El objeto {@link Ejercicio} recién creado y guardado (incluyendo el ID generado por la base de datos).
      */
     @PostMapping // Mapea específicamente las peticiones de tipo HTTP POST a este método.
-    public Ejercicio crearEjercicio(@RequestBody Ejercicio ejercicio) {
+    public EjercicioRequest crearEjercicio(@RequestBody Ejercicio ejercicio) {
         // @RequestBody es fundamental aquí: convierte el texto JSON de la petición HTTP en una instancia de la clase Java Ejercicio.
-
+        Ejercicio ejercicioGuardado = ejercicioRepository.save(ejercicio);
         // Llama al repositorio para hacer un "INSERT" en la base de datos y devuelve la entidad persistida.
-        return ejercicioRepository.save(ejercicio);
+        return convertirAEjercicioDTO(ejercicioGuardado);
     }
+
+    private EjercicioRequest convertirAEjercicioDTO(Ejercicio entidad) {
+        EjercicioRequest dto = new EjercicioRequest();
+        dto.setId(entidad.getId());
+        dto.setNombre(entidad.getNombre());
+        dto.setGrupoMuscular(entidad.getGrupoMuscular());
+        dto.setDescripcion(entidad.getDescripcion());
+
+        // Convertimos la lista de Equipamiento a EquipamientoDTO
+        if (entidad.getEquiposDisponibles() != null) {
+            List<EquipamientoRequest> equiposDTO = entidad.getEquiposDisponibles().stream()
+                    .map(this::convertirAEquipamientoDTO)
+                    .collect(Collectors.toList());
+            dto.setEquiposDisponibles(equiposDTO);
+        }
+
+        return dto;
+    }
+
+    private EquipamientoRequest convertirAEquipamientoDTO(Equipamiento equipo) {
+        EquipamientoRequest dto = new EquipamientoRequest();
+        dto.setId(equipo.getId());
+        dto.setNombre(equipo.getNombre()); // Asumiendo que tu entidad Equipamiento tiene "getNombre()"
+        return dto;
+    }
+
+
 }
+

@@ -86,9 +86,15 @@ class LoginActivity : AppCompatActivity() {
                         finish()
 
                     }else{
-                        //No funciona
-                        Toast.makeText(this@LoginActivity, "Email o contraseña incorrecto",
-                            Toast.LENGTH_LONG).show()
+                        // Extraemos el mensaje de error real del servidor
+                        val errorBody = response.errorBody()?.string()
+                        val httpCode = response.code()
+
+                        // Lo imprimimos en la pestaña "Logcat" de Android Studio
+                        android.util.Log.e("LOGIN_DEBUG", "Código HTTP: $httpCode | Mensaje: $errorBody")
+
+                        // Muestra el código en el Toast para que lo veas rápido en el móvil
+                        Toast.makeText(this@LoginActivity, "Falló con código: $httpCode", Toast.LENGTH_LONG).show()
                     }
                 }
                 override fun onFailure(call: Call<AuthResponse>, t: Throwable){
