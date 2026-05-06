@@ -39,25 +39,34 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 1. Extraemos la cabecera "Authorization" de la petición HTTP
         String authHeader = request.getHeader("Authorization");
+
+        System.out.println("🔍 Cabecera Authorization recibida: " + authHeader);
+
         String token = null;
         String email = null;
 
         // 2. Comprobamos si la cabecera existe y sigue el formato estándar "Bearer <token>"
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7); // Quitamos la palabra "Bearer " para quedarnos solo con el JWT
+            System.out.println("✂️ Token limpio extraído: " + token);
             try {
                 // Intentamos extraer el email del "Subject" del token
                 email = jwtUtil.extraerEmail(token);
+                System.out.println("📧 Email extraído del token: " + email);
             } catch (Exception e) {
                 System.out.println("⚠️ Error al extraer el token: " + e.getMessage());
             }
+        }else {
+            // --- LOG NUEVO: Si la cabecera llega mal, lo sabremos aquí ---
+            System.out.println("⚠️ AVISO: La cabecera es nula o no empieza por 'Bearer '");
         }
 
         // 3. Si tenemos un email y el usuario aún no está autenticado en el contexto actual:
         if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-
+            boolean esValido = jwtUtil.validarToken(token);
             // Validamos que el token sea legítimo (firma correcta) y no haya caducado
-            if(jwtUtil.validarToken(token)){
+            System.out.println("⚖️ ¿El token es válido?: " + esValido);
+            if(esValido){
 
                 // Creamos un objeto de autenticación para Spring Security.
                 // Como es una API Stateless, no usamos password aquí (null), y por ahora pasamos una lista de roles vacía.
