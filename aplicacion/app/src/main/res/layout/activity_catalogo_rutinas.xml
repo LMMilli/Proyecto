@@ -4,29 +4,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#FAFAFA"
-    >
+    android:background="#FAFAFA">
 
+    <!-- Título Principal -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Catálogo de rutinas"
-        android:textSize="28sp"
+        android:text="Catálago de Rutinas"
+        android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="#212121"
         android:layout_marginBottom="8dp"/>
 
+    <!-- Subtítulo descriptivo -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Seleccina una rutina a entrenar hoy"
-        android:textSize="14sp"
+        android:text="Seleccion una rutina para entrenar hoy"
+        android:textSize="16sp"
         android:textColor="#757575"
         android:layout_marginBottom="24dp"/>
 
+    <!-- Indicador de carga oculto por defecto -->
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBarRutinas"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- Menjsae de estado vacón oculto por defecto -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEmptyStateRutinas"
+        android:text="No hay rutinas disponibles en este momento"
+        android:textAlignment="center"
+        android:textColor="#757575"
+        android:textStyle="italic"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Lista de Rutinas -->
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:id="@+id/lvCatalogoRutinas"
         android:divider="#E0E0E0"
         android:dividerHeight="1dp"/>

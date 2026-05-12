@@ -1,70 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="UTF-8" ?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="32dp"
-    android:gravity="center_horizontal"
-    android:background="#FFFFFF">
+    android:fillViewport="true"
+    android:background="#FAFAFA">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvBienvenida"
-        android:text="!Hola, Atleta¡"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp"/>
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnMisEntrenamientos"
-        android:text="MIS ENTRENAMIENTOS"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:gravity="center_horizontal">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnCatalogoRutinas"
-        android:text="CATALOGO RUTINAS"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
+        <!-- Titulo de Bienvenida -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvBienvenida"
+            android:text="¡Hola, Atleta!"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="48dp"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnMisMedidas"
-        android:text="MIS MEDIDAS"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
+        <!-- Botones Principales -->
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/btnMisEntrenamientos"
+            android:text="MIS ENTRENAMIENTOS"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:cornerRadius="8dp"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnPalenAdmin"
-        android:text="PANEL DE ADMINISTRADOR"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:backgroundTint="#FF9800"
-        android:visibility="gone"
-        android:layout_marginBottom="24dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/btnCatalogoRutinas"
+            android:text="CATÁLOGO DE RUTINAS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnLogout"
-        android:text="CERRAR SESION"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:backgroundTint="#F44336"
-        android:layout_marginBottom="24dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/btnMisMedidas"
+            android:text="MIS MEDIDAS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
+            android:layout_marginBottom="40dp"/>
 
-</LinearLayout>
+        <!-- Boton de administrador oculto por defecto -->
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/btnPanelAdmin"
+            android:text="PANEL DE ADNIMISTRADOR"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="#FF9800"
+            app:cornerRadius="8dp"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Boton de cerrar sesion estilo outlined -->
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/btnLogout"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="CERRAR SESION"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#D32F2F"
+            app:strokeColor="#D32F2F"
+            app:strokeWidth="2dp"
+            app:cornerRadius="8dp"
+            android:layout_marginBottom="24dp"/>
+    </LinearLayout>
+</ScrollView>

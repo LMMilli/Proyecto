@@ -53,4 +53,24 @@ class TokenManager(context: Context) {
     fun clearAll(){
         sharedPreferences.edit().clear().apply()
     }
+
+    //Funcion para guardar la hora exacta en la que se hace el login
+    fun saveLoginTime(){
+        sharedPreferences.edit().putLong("LOGIN_TIME", System.currentTimeMillis()).apply()
+    }
+
+    //Funciona pra comprobar si han pasado 24 horas
+    fun isTokenExpired(): Boolean{
+         val loginTime = sharedPreferences.getLong("LOGIN_TIME", 0L)
+
+        if(loginTime == 0L) return true
+
+        val currenTime = System.currentTimeMillis()
+        val twentyFourHourInMillis = 24 * 60 * 60 * 1000L //24 horas en milisengundos
+
+        //Duvuelve true si la difrenica de tiempo es mayor a 24 horas
+        return (currenTime - loginTime) > twentyFourHourInMillis
+    }
+
+
 }

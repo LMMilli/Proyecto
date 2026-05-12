@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,12 +14,13 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         val tvBienvenida = findViewById<TextView>(R.id.tvBienvenida)
-        val btnEntrenamientos = findViewById<Button>(R.id.btnMisEntrenamientos)
-        val btnRutinas = findViewById<Button>(R.id.btnCatalogoRutinas)
-        val btnMedidas = findViewById<Button>(R.id.btnMisMedidas)
-        val btnAdmin = findViewById<Button>(R.id.btnPalenAdmin)
+        val btnEntrenamientos = findViewById<MaterialButton>(R.id.btnMisEntrenamientos)
+        val btnRutinas = findViewById<MaterialButton>(R.id.btnCatalogoRutinas)
+        val btnMedidas = findViewById<MaterialButton>(R.id.btnMisMedidas)
+        val btnAdmin = findViewById<MaterialButton>(R.id.btnPanelAdmin)
+        val btnLogout = findViewById<MaterialButton>(R.id.btnLogout)
+
         val tokenManager = TokenManager(MyApp.appContext)
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
 
 
         //Abrimos intent para sacor los datos del usuario

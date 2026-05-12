@@ -1,40 +1,71 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
     android:background="#FAFAFA">
 
+    <!-- Título Principal -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mis Entrenamientos"
+        android:textStyle="bold"
+        android:textSize="32sp"
+        android:textColor="#212121"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Título del listado -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mis entrenamientos"
-        android:textSize="28sp"
+        android:text="Historial reciente"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#424242"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Indicador de carga oculto por defecto -->
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBarHistorial"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- Mensaje si no hay entrenamientos oculto por defecto -->
+    <TextView
+        android:id="@+id/tvEmptyStateHistorial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aún no tienes entrenamientos registrados.\n¡Empieza uno hoy mismo!"
+        android:textAlignment="center"
+        android:textColor="#757575"
+        android:textStyle="italic"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Lista de Historial -->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/lvHistorialEntrenamientos"
+        android:divider="#E0E0E0"
+        android:dividerHeight="1dp"
         android:layout_marginBottom="16dp"/>
 
-    <Button
+    <!-- Boton pincipal fijado abajo -->
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnNuveoEntrenamiento"
+        android:layout_height="60dp"
+        android:id="@+id/btnNuevoEntrenamiento"
         android:text="EMPEZAR ENTRENAMIENTO"
         android:textStyle="bold"
+        android:textSize="16sp"
         android:backgroundTint="#4CAF50"
-        android:layout_marginBottom="2dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Historial Reciente:"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <ListView
-        android:id="@+id/lvHistorialEntrenaientos"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#EEEEEE"
-        android:dividerHeight="1dp"/>
+        app:cornerRadius="8dp"/>
 
 </LinearLayout>

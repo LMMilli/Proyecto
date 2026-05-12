@@ -2,8 +2,10 @@ package com.example.aplicacion
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,7 @@ import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.AuthResponse
 import com.example.aplicacion.model.LoginRequest
 import com.example.aplicacion.model.Usuario
+import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Call
@@ -20,55 +23,59 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Istaciamos el Token Manager
+        //Instanciamos el Token Manager
         val tokenManager = TokenManager(MyApp.appContext)
 
-        //Comprobamos si hay un token guardado
-        if (tokenManager.getToken() != null){
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
-            return
+        //Comprobamos is hay un token guardado
+        if(tokenManager.getToken() != null){
+            if(tokenManager.isTokenExpired()){
+                tokenManager.clearAll()
+            }else{
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+                return
+            }
         }
 
         setContentView(R.layout.activity_login)
 
-        //Enlazmos las variables con los item de la pantalla
-        val etEmail = findViewById<EditText>(R.id.etEmailLogin)
-        val etPassword = findViewById<EditText>(R.id.etPasswordLogin)
+        //Enlazamos la variables
+        val etEmail = findViewById<TextInputEditText>(R.id.etEmailLogin)
+        val etPassword = findViewById<TextInputEditText>(R.id.etPasswordLogin)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvRegistro = findViewById<TextView>(R.id.tvIrARegistro)
+        val progressBar = findViewById<ProgressBar>(R.id.progressBarLogin)
 
-        //Iniciamos Retrofit
         val apiService = ApiClient.retrofit.create(ApiService::class.java)
 
-        //Fucion del boton entrar
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
-            //Validacion para que los campos no este vacioes
             if(email.isEmpty() || password.isEmpty()){
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            //Crear el LogineRequest con los datos
+            //Cambios el estado de UI a "Cargando"
+            btnLogin.isEnabled = false
+            btnLogin.text = ""
+            progressBar.visibility = View.VISIBLE
+
             val loginRequest = LoginRequest(email, password)
 
-            //Eviamos la peticon POST al servidor en segundo plano
             apiService.login(loginRequest).enqueue(object : Callback<AuthResponse>{
-                //Si el servidor responde tanto un OK como un error
-                override fun onResponse(call : Call<AuthResponse>, response: Response<AuthResponse>){
-                    if(response.isSuccessful && response.body() != null){
-                        //Funciona el Login
+                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>){
+                    //Restauramos la UI
+                    btnLogin.isEnabled = true
+                    btnLogin.text = "ENTRAR"
+                    progressBar.visibility = View.GONE
+
+                    if(response.isSuccessful && response.body() !=null){
                         val authResponse = response.body()!!
 
-                        //Guardamos el token en la caja fuerte
-                        val tokenManager = TokenManager(MyApp.appContext)
                         tokenManager.saveToken(authResponse.token)
-
-                        //Extraemos el usuario
                         val usuarioLogueado = authResponse.usuario
 
                         tokenManager.saveUserDAta(
@@ -76,44 +83,38 @@ class LoginActivity : AppCompatActivity() {
                             nombre = usuarioLogueado.nombre,
                             email = usuarioLogueado.email
                         )
+                        tokenManager.saveLoginTime()
 
-                        Toast.makeText(this@LoginActivity, "Bienvenido ${usuarioLogueado.nombre}!",
-                            Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@LoginActivity, "Bienvenido ${usuarioLogueado.nombre}",
+                            Toast.LENGTH_SHORT).show()
 
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-
                         startActivity(intent)
                         finish()
-
                     }else{
-                        // Extraemos el mensaje de error real del servidor
                         val errorBody = response.errorBody()?.string()
                         val httpCode = response.code()
 
-                        // Lo imprimimos en la pestaña "Logcat" de Android Studio
                         android.util.Log.e("LOGIN_DEBUG", "Código HTTP: $httpCode | Mensaje: $errorBody")
-
-                        // Muestra el código en el Toast para que lo veas rápido en el móvil
-                        Toast.makeText(this@LoginActivity, "Falló con código: $httpCode", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@LoginActivity, "Credenciales incorrectas ($httpCode)", Toast.LENGTH_LONG).show()
                     }
                 }
+
                 override fun onFailure(call: Call<AuthResponse>, t: Throwable){
-                    Toast.makeText(this@LoginActivity, "Error de conexión",
-                        Toast.LENGTH_LONG).show()
+                    //Restauramos la UI
+                    btnLogin.isEnabled = true
+                    btnLogin.text = "ENTRAR"
+                    progressBar.visibility = View.GONE
+
+                    Toast.makeText(this@LoginActivity, "Error de conexión: Verifica tu internet", Toast.LENGTH_LONG).show()
                 }
             })
-
         }
 
-        //Fucion no tines cuenta
         tvRegistro.setOnClickListener {
-            //Pantalla de registro
             val intent = Intent(this, RegistroActivity::class.java)
             startActivity(intent)
         }
-
-
-
     }
 }
 
