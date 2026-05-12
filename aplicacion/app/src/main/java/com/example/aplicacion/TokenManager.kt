@@ -3,6 +3,8 @@ package com.example.aplicacion
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import org.json.JSONObject
+import kotlin.io.encoding.Base64
 
 class TokenManager(context: Context) {
     //Creamos una llave maestr super segura del propi sistema Android

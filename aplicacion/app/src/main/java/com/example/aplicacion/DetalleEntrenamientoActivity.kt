@@ -4,17 +4,12 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.setPadding
 import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
-import com.example.aplicacion.model.Ejercicio
 import com.example.aplicacion.model.EjercicioEntrenamiento
 import com.example.aplicacion.model.Entrenamiento
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,8 +21,8 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
     private lateinit var tvFecha: TextView
     private lateinit var contenedorSeries: LinearLayout
 
-    override fun onCreate(saveInstanceState: Bundle?){
-        super.onCreate(saveInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_entrenamiento)
 
         tvTitulo = findViewById(R.id.tvTituloDetalle)
@@ -52,7 +47,7 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
                     tvTitulo.text = "Entrenamiento Dia:"
                     tvFecha.text = entrenamiento.fecha?.split("T")?.get(0) ?: "Sin fecha"
 
-                    //Recogemos los bloques
+                    // Recogemos los bloques (ahora mapeados automáticamente por @SerializedName)
                     val bloquesRealizados = entrenamiento.ejerciciosEntrenamiento ?: emptyList()
 
                     if(bloquesRealizados.isEmpty()){
@@ -80,12 +75,14 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
     private fun pintarInforme(bloques: List<EjercicioEntrenamiento>){
         //Recorremos cada bloque
         for(bloque in bloques){
-            //El nombre viene desde el servidor
-            val nombreEjercicio = bloque.ejercicio?.nombre ?: "Ejercicio Desconocido"
 
-            //Añadios el titulo del ejercicio
+            // Leemos el nombre y equipamiento directamente de las nuevas propiedades
+            val nombreEjercicio = bloque.nombreEjercicio ?: "Ejercicio Desconocido"
+            val equipamiento = bloque.nombreEquipamiento?.let { " ($it)" } ?: ""
+
+            // Añadimos el titulo del ejercicio
             val tituloView = TextView(this).apply {
-                text = nombreEjercicio
+                text = "$nombreEjercicio$equipamiento"
                 textSize = 20f
                 setTypeface(null, android.graphics.Typeface.BOLD)
                 setTextColor(android.graphics.Color.parseColor("#2196F3"))
@@ -98,7 +95,9 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
 
             listaDeSeries.forEachIndexed { index, serie ->
                 val detalleSerieView = TextView(this).apply {
-                    text = "Set ${index +1}: ${serie.repeticiones} reps x ${serie.peso}kg (RPE: ${serie.rpe})"
+                    // Ahora también mostramos el tipo de serie que viene en el JSON ("Efectiva", etc.)
+                    val tipoSerie = serie.tipo ?: "Normal"
+                    text = "Set ${index +1} [$tipoSerie]: ${serie.repeticiones} reps x ${serie.peso}kg (RPE: ${serie.rpe})"
                     textSize = 16f
                     setPadding(0, 8, 0, 8)
                 }
@@ -106,5 +105,4 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
             }
         }
     }
-
 }
