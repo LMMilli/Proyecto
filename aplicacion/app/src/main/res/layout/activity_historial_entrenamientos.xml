@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#FAFAFA">
+    android:background="@color/backgroundColor">
 
     <!-- Título Principal -->
     <TextView
@@ -14,7 +14,7 @@
         android:text="Mis Entrenamientos"
         android:textStyle="bold"
         android:textSize="32sp"
-        android:textColor="#212121"
+        android:textColor="@color/textColorPrimary"
         android:layout_marginBottom="24dp"/>
 
     <!-- Título del listado -->
@@ -24,7 +24,7 @@
         android:text="Historial reciente"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#424242"
+        android:textColor="@color/textColorPrimary"
         android:layout_marginBottom="12dp"/>
 
     <!-- Indicador de carga oculto por defecto -->
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBarHistorial"
         android:layout_gravity="center"
+        android:indeterminateTint="@color/primaryColor"
         android:visibility="gone"/>
 
     <!-- Mensaje si no hay entrenamientos oculto por defecto -->
@@ -42,7 +43,7 @@
         android:layout_height="wrap_content"
         android:text="Aún no tienes entrenamientos registrados.\n¡Empieza uno hoy mismo!"
         android:textAlignment="center"
-        android:textColor="#757575"
+        android:textColor="@color/textColorSecondary"
         android:textStyle="italic"
         android:visibility="gone"
         android:layout_marginTop="20dp"/>
@@ -53,7 +54,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/lvHistorialEntrenamientos"
-        android:divider="#E0E0E0"
+        android:divider="@color/textColorSecondary"
         android:dividerHeight="1dp"
         android:layout_marginBottom="16dp"/>
 
@@ -65,7 +66,8 @@
         android:text="EMPEZAR ENTRENAMIENTO"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/primaryColor"
         app:cornerRadius="8dp"/>
 
 </LinearLayout>

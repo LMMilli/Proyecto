@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Colores base de la marca -->
-    <color name="primaryColor">#00E5FF</color>
-    <color name="primaryColorVariant">#00B8D4</color>
-    <color name="colorAccent">#00E5FF</color>
+    <color name="primaryColor">#64B5F6</color>
+    <color name="primaryColorVariant">#42A5F5</color>
+    <color name="colorAccent">#64B5F6</color>
 
     <!-- Fondos y superfices (Modo Oscuro) -->
-    <color name="backgroundColor">#121212</color>
-    <color name="surfaceColor">#1E1E1E</color>
+    <color name="backgroundColor">#1A1C1E</color>
+    <color name="surfaceColor">#24272A</color>
 
     <!-- Texots e iconos (Modo Oscuro) -->
-    <color name="textColorPrimary">#FFFFFF</color>
-    <color name="textColorSecondary">#A0A0A0</color>
+    <color name="textColorPrimary">#E3E3E3</color>
+    <color name="textColorSecondary">#9AA0A6</color>
 </resources>

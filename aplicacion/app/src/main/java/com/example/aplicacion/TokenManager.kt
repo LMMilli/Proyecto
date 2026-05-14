@@ -3,8 +3,7 @@ package com.example.aplicacion
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import org.json.JSONObject
-import kotlin.io.encoding.Base64
+import androidx.core.content.edit
 
 class TokenManager(context: Context) {
     //Creamos una llave maestr super segura del propi sistema Android
@@ -23,7 +22,7 @@ class TokenManager(context: Context) {
 
     //Funcion para guardar el token cuando haces login
     fun saveToken(token: String){
-        sharedPreferences.edit().putString("JWT_TOKEN", token).apply()
+        sharedPreferences.edit { putString("JWT_TOKEN", token) }
     }
 
     //Funcion para leer el token
@@ -33,7 +32,7 @@ class TokenManager(context: Context) {
 
     //Funcion para borra el token(Cerrar sesion o caducar)
     fun clearToken(){
-        sharedPreferences.edit().remove("JWT_TOKEN").apply()
+        sharedPreferences.edit { remove("JWT_TOKEN") }
     }
 
     //Funcion para guardar usuario
@@ -51,12 +50,12 @@ class TokenManager(context: Context) {
     fun getUserEmail(): String? = sharedPreferences.getString("USER_EMAIL", null)
 
     fun clearAll(){
-        sharedPreferences.edit().clear().apply()
+        sharedPreferences.edit { clear() }
     }
 
     //Funcion para guardar la hora exacta en la que se hace el login
     fun saveLoginTime(){
-        sharedPreferences.edit().putLong("LOGIN_TIME", System.currentTimeMillis()).apply()
+        sharedPreferences.edit { putLong("LOGIN_TIME", System.currentTimeMillis()) }
     }
 
     //Funciona pra comprobar si han pasado 24 horas

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#FAFAFA">
+    android:background="@color/backgroundColor">
 
     <!-- Título Principal -->
     <TextView
@@ -14,7 +14,7 @@
         android:text="Mi Progreso"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="#212121"
+        android:textColor="@color/textColorPrimary"
         android:gravity="center_horizontal"
         android:layout_marginBottom="24dp"/>
 
@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/surfaceColor"
         android:layout_marginBottom="24dp">
 
         <LinearLayout
@@ -45,7 +46,7 @@
         android:text="Historial Detallado"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#424242"
+        android:textColor="@color/textColorPrimary"
         android:layout_marginBottom="12dp"/>
 
     <!-- Indicador de carga oculto por defecto -->
@@ -54,6 +55,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBarMedidas"
         android:layout_gravity="center"
+        android:indeterminateTint="@color/primaryColor"
         android:visibility="gone"/>
 
     <!-- Mensaje de estado vacio oculto por defecto -->
@@ -63,7 +65,7 @@
         android:id="@+id/tvEmptyState"
         android:text="Aún no hay medidas registradas"
         android:textAlignment="center"
-        android:textColor="#757575"
+        android:textColor="@color/textColorSecondary"
         android:textStyle="italic"
         android:visibility="gone"
         android:layout_marginTop="20dp"/>
@@ -74,7 +76,7 @@
         android:layout_height="0dp"
         android:id="@+id/lvHistorialMedidas"
         android:layout_weight="1"
-        android:divider="#E0E0E0"
+        android:divider="@color/textColorSecondary"
         android:dividerHeight="1dp"
         android:layout_marginBottom="16dp"/>
 
@@ -86,7 +88,8 @@
         android:text="REGISTAR NUEVO PESO"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:backgroundTint="#FF5722"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/primaryColor"
         app:cornerRadius="8dp"/>
 
 </LinearLayout>

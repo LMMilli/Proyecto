@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -13,7 +12,6 @@ import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.AuthResponse
 import com.example.aplicacion.model.LoginRequest
-import com.example.aplicacion.model.Usuario
 import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
         //Comprobamos is hay un token guardado
         if(tokenManager.getToken() != null){
             if(tokenManager.isTokenExpired()){
+                tokenManager.clearToken()
                 tokenManager.clearAll()
             }else{
                 val intent = Intent(this, HomeActivity::class.java)

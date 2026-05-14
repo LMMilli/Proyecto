@@ -7,46 +7,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="32dp"
-    android:background="#FAFAFA">
+    android:background="@color/backgroundColor">
 
+    <!-- Título Principal -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Panel de Control"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#D32F2F"
+        android:textColor="@color/textColorPrimary"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="40dp"/>
 
-    <Button
+    <!-- Botón Añadir Ejercicio -->
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/btnAdminEjercicios"
         android:text="AÑADIR EJERCICIO NUEVO"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="@color/primaryColor"
+        app:cornerRadius="8dp"
         android:layout_marginBottom="24dp"/>
 
 
-    <Button
+    <!-- Boton Crear Rutina -->
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/btnAdminRutinas"
         android:text="CREAR RUTINA"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:backgroundTint="#2196F3"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/primaryColor"
+        app:cornerRadius="8dp"
         android:layout_marginBottom="24dp"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnVolverHome"
         android:text="Volver al Menu Principal"
-        android:textColor="#757575"
-        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@color/textColorSecondary"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_marginTop="32dp"/>
 
 

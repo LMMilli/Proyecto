@@ -1,76 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#FFFFFF"
+    android:background="@color/backgroundColor"
     android:padding="32dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Añadir Ejercico"
+        android:text="Añadir Ejercicio"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#4CAF50"
+        android:textColor="@color/textColorPrimary"
         android:layout_marginBottom="32dp"/>
 
-    <EditText
+    <!-- Campo Nombre -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etNombreEjercicio"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:hint="Nombre (Ej: Press Banca)"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:layout_marginBottom="16dp"/>
+        app:boxStrokeColor="@color/primaryColor"
+        app:hintTextColor="@color/primaryColor"
+        android:layout_marginBottom="16dp">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etNombreEjercicio"
+            android:textColor="@color/textColorPrimary"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo Grupo Muscualar -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etGurpoMuscular"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:hint="Grupo Muscular (Ej: Pecho)"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:layout_marginBottom="16dp"/>
+        app:boxStrokeColor="@color/primaryColor"
+        app:hintTextColor="@color/primaryColor"
+        android:layout_marginBottom="16dp">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etGrupoMuscular"
+            android:textColor="@color/textColorPrimary"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo Descripción -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etDescripcion"
-        android:inputType="textMultiLine"
-        android:hint="Descripcion"
-        android:lines="3"
-        android:gravity="top|start"
-        android:minHeight="48dp"
-        android:layout_marginBottom="32dp"/>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:hint="Descripción"
+        app:boxStrokeColor="@color/primaryColor"
+        app:hintTextColor="@color/primaryColor"
+        android:layout_marginBottom="32dp">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etDescripcion"
+            android:textColor="@color/textColorPrimary"
+            android:inputType="textMultiLine"
+            android:gravity="top|start"
+            android:lines="3"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Título de Selección -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Selecciona el equipamiento"
+        android:textColor="@color/textColorPrimary"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
+    <!-- Lista de Equipamiento -->
     <ListView
-        android:id="@+id/lvEquipamiento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/lvEquipamiento"
         android:layout_marginBottom="16dp"
         android:layout_weight="1"
-        android:choiceMode="multipleChoice" />
+        android:choiceMode="multipleChoice"/>
 
-
-
-    <Button
+    <!-- Botón Guardar -->
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/btnGuardarEjercicios"
         android:text="GUARDAR EJERCICIO"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:backgroundTint="#ACAF50"/>
-
-
-
+        android:textColor="#FFFFFF"
+        app:backgroundTint="@color/primaryColor"
+        app:cornerRadius="8dp"/>
 </LinearLayout>

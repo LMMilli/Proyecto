@@ -2,8 +2,6 @@ package com.example.aplicacion
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
@@ -13,38 +11,37 @@ import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.Ejercicio
 import com.example.aplicacion.model.Rutina
 import com.example.aplicacion.model.RutinaRequest
+// Nuevos imports para Material Design
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class CrearRutinaActivity : AppCompatActivity() {
     private var listaEjerciciosOriginal : List<Ejercicio> = emptyList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crear_rutina)
 
-        val etNombre = findViewById<EditText>(R.id.etNombreRutina)
+        // Enlaces a la vista actualizados a los nuevos componentes Material
+        val etNombre = findViewById<TextInputEditText>(R.id.etNombreRutina)
         val lvEjercicios = findViewById<ListView>(R.id.lvEjercicios)
-        val btnGuarda = findViewById<Button>(R.id.btnGuardarRutina)
+        val btnGuarda = findViewById<MaterialButton>(R.id.btnGuardarRutina)
+        val spinner = findViewById<Spinner>(R.id.spDificultad)
 
         val apiService = ApiClient.retrofit.create(ApiService::class.java)
 
-        val spinner = findViewById<Spinner>(R.id.spDificultad)
-
-
-
-
-
-        //Obtener los ejercicios disponibles
+        // Obtener los ejercicios disponibles
         apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>> {
             override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>){
                 if(response.isSuccessful && response.body() != null){
-                    listaEjerciciosOriginal=response.body()!!
-                    //Extraemos los nombre para mostrarlos en la lista
+                    listaEjerciciosOriginal = response.body()!!
+                    // Extraemos los nombre para mostrarlos en la lista
                     val nombresEjercicios = listaEjerciciosOriginal.map { it.nombre }
 
-                    //LLenamos la lista visula con los nombre y casillas
-
+                    // LLenamos la lista visual con los nombre y casillas
                     val adapter = ArrayAdapter(this@CrearRutinaActivity, android.R.layout.simple_list_item_multiple_choice, nombresEjercicios)
 
                     lvEjercicios.adapter = adapter
@@ -66,7 +63,7 @@ class CrearRutinaActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            //Recojer el id de los ejercicios selecionados para las rutinas
+            // Recojer el id de los ejercicios selecionados para las rutinas
             val ejerciciosSelecionadosIds = mutableListOf<Long>()
             val posicionesMarcadas = lvEjercicios.checkedItemPositions
 
@@ -80,12 +77,12 @@ class CrearRutinaActivity : AppCompatActivity() {
             }
 
             if (ejerciciosSelecionadosIds.isEmpty()){
-                Toast.makeText(this, "Seleciona al menos un ejercicio",
+                Toast.makeText(this, "Selecciona al menos un ejercicio",
                     Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            //Creamos el DTO y lo enviamos
+            // Creamos el DTO y lo enviamos
             val request = RutinaRequest(nombreRutina, ejerciciosSelecionadosIds)
             apiService.crearRutina(request).enqueue(object : Callback<Rutina>{
                 override fun onResponse(call: Call<Rutina>, response: Response<Rutina>){

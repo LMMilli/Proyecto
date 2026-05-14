@@ -1,6 +1,5 @@
 package com.example.aplicacion
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
@@ -9,6 +8,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat // Importante para leer colores dinámicos
 import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.EjercicioEntrenamiento
@@ -65,7 +65,7 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
                     val bloquesRealizados = entrenamiento.ejerciciosEntrenamiento ?: emptyList()
 
                     if (bloquesRealizados.isEmpty()){
-                        tvTitulo.text = "Entrenamiento Vacio"
+                        tvTitulo.text = "Entrenamiento Vacío"
                         Toast.makeText(this@DetalleEntrenamientoActivity, "No hay series registradas",
                             Toast.LENGTH_SHORT).show()
                         return
@@ -88,21 +88,26 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
     }
 
     private fun pintarInforme(bloques: List<EjercicioEntrenamiento>){
-        //Limpiamos el contenedor por si acaso
+        // Limpiamos el contenedor por si acaso
         contenedorSeries.removeAllViews()
 
-        //Recorremos cda bloque de ejercicio
+        // Cargamos los colores desde colors.xml usando ContextCompat
+        val colorSuperficie = ContextCompat.getColor(this, R.color.surfaceColor)
+        val colorPrincipal = ContextCompat.getColor(this, R.color.primaryColor)
+        val colorTextoPrincipal = ContextCompat.getColor(this, R.color.textColorPrimary)
+
+        // Recorremos cada bloque de ejercicio
         for(bloque in bloques){
             val nombreEjercicio = bloque.nombreEjercicio ?: "Ejercicio Desconocido"
             val equipamiento = bloque.nombreEquipamiento?.let { " ($it)" }?: ""
 
-            //1. Cremoas la tarjeta
+            // 1. Creamos la tarjeta
             val cardView = MaterialCardView(this).apply {
                 radius = dpToPx(12).toFloat()
                 cardElevation = dpToPx(4).toFloat()
-                setCardBackgroundColor(Color.WHITE)
+                setCardBackgroundColor(colorSuperficie) // Fondo adaptable (Blanco o Gris Asfalto)
 
-                //Margenes de la tarjeta
+                // Márgenes de la tarjeta
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -111,23 +116,23 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
                 layoutParams = params
             }
 
-            //2. Creamos un Laout interno para la tarjeta
+            // 2. Creamos un Layout interno para la tarjeta
             val cardLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
             }
 
-            //3. Añadimos el título del ejercicio
+            // 3. Añadimos el título del ejercicio
             val tituloView = TextView(this).apply {
                 text = "$nombreEjercicio$equipamiento"
                 textSize = 18f
                 setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.parseColor("#4CAF50"))
+                setTextColor(colorPrincipal) // Color de acento (Azul o Cian)
                 setPadding(0, 0, 0, dpToPx(12))
             }
             cardLayout.addView(tituloView)
 
-            //4. Recorremos las series y las añadimos al Layout interno
+            // 4. Recorremos las series y las añadimos al Layout interno
             val listaDeSeries = bloque.series ?: emptyList()
 
             listaDeSeries.forEachIndexed { index, serie ->
@@ -136,23 +141,21 @@ class DetalleEntrenamientoActivity : AppCompatActivity() {
                 val detalleSerieView = TextView(this).apply {
                     text = "Set ${index + 1} [$tipoSerie]: ${serie.repeticiones} reps x ${serie.peso}kg (RPE: ${serie.rpe})"
                     textSize = 15f
-                    setTextColor(Color.parseColor("#424242"))
+                    setTextColor(colorTextoPrincipal) // Texto adaptable (Negro o Blanco)
                     setPadding(0, dpToPx(4), 0, dpToPx(4))
                 }
                 cardLayout.addView(detalleSerieView)
             }
 
-            //5. Ensamblamos todo: El Layout a la Tarejta, y la Tarjeta al Contenedor princal
+            // 5. Ensamblamos todo: El Layout a la Tarjeta, y la Tarjeta al Contenedor principal
             cardView.addView(cardLayout)
             contenedorSeries.addView(cardView)
         }
     }
 
-    //Funcion auxiliar para convertir "dp" a píxeles exactos de cada pantalla
+    // Función auxiliar para convertir "dp" a píxeles exactos de cada pantalla
     private fun dpToPx(dp: Int): Int {
         val density = resources.displayMetrics.density
         return (dp * density).toInt()
     }
-
-
 }
