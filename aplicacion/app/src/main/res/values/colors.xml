@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Colores base de la marca -->
+    <color name="primaryColor">#2962FF</color>
+    <color name="primaryColorVariant">#0039CB</color>
+    <color name="colorAccent">#2962FF</color>
+
+    <!-- Fondos y superfices (ModoClaro) -->
+    <color name="backgroundColor">#FAFAFA</color>
+    <color name="surfaceColor">#FFFFFF</color>
+
+    <!-- Texots e iconos (Modo Claro) -->
+    <color name="textColorPrimary">#121212</color>
+    <color name="textColorSecondary">#5F6368</color>
 </resources>

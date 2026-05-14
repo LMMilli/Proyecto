@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#FAFAFA">
+    android:background="@color/backgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:text="¡Hola, Atleta!"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#212121"
+            android:textColor="@color/textColorPrimary"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="48dp"/>
 
@@ -34,6 +34,8 @@
             android:textStyle="bold"
             android:textSize="16sp"
             app:cornerRadius="8dp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@color/primaryColor"
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -44,6 +46,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="8dp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@color/primaryColor"
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -54,6 +58,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="8dp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@color/primaryColor"
             android:layout_marginBottom="40dp"/>
 
         <!-- Boton de administrador oculto por defecto -->

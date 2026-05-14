@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#FAFAFA">
+    android:background="@color/backgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:text="Crear cuenta"
             android:textSize="36sp"
             android:textStyle="bold"
-            android:textColor="#212121"
+            android:textColor="@color/textColorPrimary"
             android:layout_marginBottom="40dp"/>
 
         <!-- Campo Nombre -->
@@ -29,12 +29,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nombre completo"
+            app:boxStrokeColor="@color/primaryColor"
+            app:hintTextColor="@color/primaryColor"
             android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etNombreRegistro"
+                android:textColor="@color/textColorPrimary"
                 android:inputType="textPersonName"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,12 +47,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Correo electrónico"
+            app:boxStrokeColor="@color/primaryColor"
+            app:hintTextColor="@color/primaryColor"
             android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etEmailRegistro"
+                android:textColor="@color/textColorPrimary"
                 android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,12 +66,16 @@
             android:layout_height="wrap_content"
             android:hint="Contraseña"
             app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/primaryColor"
+            app:boxStrokeColor="@color/primaryColor"
+            app:hintTextColor="@color/primaryColor"
             android:layout_marginBottom="32dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/etPasswordRegistro"
+                android:textColor="@color/textColorPrimary"
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,6 +85,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/progressBarRegistro"
             android:visibility="gone"
+            android:indeterminateTint="@color/primaryColor"
             android:layout_marginBottom="16dp"/>
 
         <!-- Boton de Registro -->
@@ -86,6 +97,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="8dp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@color/primaryColor"
             android:layout_marginBottom="24dp"/>
 
         <!-- Texto Volver -->
@@ -94,7 +107,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvVolverLogin"
             android:text="Ya tengo una cuenta. Iniciar sesión"
-            android:textColor="#1976D2"
+            android:textColor="@color/primaryColor"
             android:textStyle="bold"
             android:padding="8dp"
             android:background="?attr/selectableItemBackground"
