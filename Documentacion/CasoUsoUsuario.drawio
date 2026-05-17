@@ -1,0 +1,73 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Página-1" id="1i_Cy6gpcNXgH1pWQ_Kl">
+    <mxGraphModel dx="1414" dy="783" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-10" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0.1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-12" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;startArrow=none;startFill=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Actor" vertex="1">
+          <mxGeometry height="60" width="30" x="60" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-14" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-2" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-15" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-2" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-2" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Realizar Entrenamiento" vertex="1">
+          <mxGeometry height="80" width="120" x="170" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-11" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-17" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Registrar Medida" vertex="1">
+          <mxGeometry height="80" width="120" x="170" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-4" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Registar Objetivo" vertex="1">
+          <mxGeometry height="80" width="120" x="170" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir Peso" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-6" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir Equipamiento" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-7" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir RPE" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-8" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir Peso Cuerpo" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir Grasa" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-13" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-2" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0.008;entryY=0.663;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-16" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.313;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-18" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir Tipo Objetivo" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-19" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="Introducir Valor Obetivo" vertex="1">
+          <mxGeometry height="80" width="120" x="370" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-20" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0.042;entryY=0.325;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KX_PplLfVO7DLuLSh6PJ-21" edge="1" parent="1" source="KX_PplLfVO7DLuLSh6PJ-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.375;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="KX_PplLfVO7DLuLSh6PJ-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

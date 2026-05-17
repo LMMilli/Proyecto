@@ -8,6 +8,8 @@ import com.example.aplicacion.model.Equipamiento
 import com.example.aplicacion.model.LoginRequest
 import com.example.aplicacion.model.Medida
 import com.example.aplicacion.model.MedidaRequest
+import com.example.aplicacion.model.Objetivo
+import com.example.aplicacion.model.ObjetivoRequest
 import com.example.aplicacion.model.RegistroRequest
 import com.example.aplicacion.model.Rutina
 import com.example.aplicacion.model.RutinaRequest
@@ -54,4 +56,10 @@ interface ApiService {
 
     @GET("api/equipamiento")
     fun obtenerTodosEquipamientos () : Call<List<Equipamiento>>
+
+    @POST("api/objetivos")
+    fun crearObjetivo(@Body request: ObjetivoRequest): Call<Objetivo>
+
+    @GET("api/objetivos/usuario/{id}")
+    fun obtenerObjetivos(@Path("id") idUsuario: Long): Call<List<Objetivo>>
 }

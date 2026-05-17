@@ -60,7 +60,20 @@
             app:cornerRadius="8dp"
             android:textColor="#FFFFFF"
             app:backgroundTint="@color/primaryColor"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/btnMisObjetivos"
+            android:text="MIS OBJETIVOS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@color/primaryColor"
             android:layout_marginBottom="40dp"/>
+
 
         <!-- Boton de administrador oculto por defecto -->
         <com.google.android.material.button.MaterialButton

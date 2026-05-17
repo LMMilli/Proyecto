@@ -17,6 +17,7 @@ class HomeActivity : AppCompatActivity() {
         val btnEntrenamientos = findViewById<MaterialButton>(R.id.btnMisEntrenamientos)
         val btnRutinas = findViewById<MaterialButton>(R.id.btnCatalogoRutinas)
         val btnMedidas = findViewById<MaterialButton>(R.id.btnMisMedidas)
+        val btnObjetivos = findViewById<MaterialButton>(R.id.btnMisObjetivos)
         val btnAdmin = findViewById<MaterialButton>(R.id.btnPanelAdmin)
         val btnLogout = findViewById<MaterialButton>(R.id.btnLogout)
 
@@ -53,6 +54,12 @@ class HomeActivity : AppCompatActivity() {
 
         btnMedidas.setOnClickListener {
             val intent = android.content.Intent(this, MedidasActivity::class.java)
+            intent.putExtra("ID_USUARIO", idUsuario)
+            startActivity(intent)
+        }
+
+        btnObjetivos.setOnClickListener {
+            val intent = android.content.Intent(this, ObjetivosActivity::class.java)
             intent.putExtra("ID_USUARIO", idUsuario)
             startActivity(intent)
         }

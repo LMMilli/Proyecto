@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Aplicacion"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".NuevoObjetivoActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetalleEntrenamientoActivity"
             android:exported="false" />
         <activity
@@ -57,6 +60,9 @@
         <activity
             android:name=".RegistroActivity"
             android:exported="true" />
+
+        <activity android:name=".ObjetivosActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

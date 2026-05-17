@@ -37,7 +37,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
     //Datos del usuario y de la rutina actual
     private var idUsuario: Long = -1L
-    private var idRutinaAsignada: Long?=null
+    private var idRutinaAsignada: Long? = null
     private var idsEjercicioRutina: List<Long>? = null
 
     //Catálogos cargados desde el servidor
@@ -50,6 +50,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * hora de guardar el entrenamiento para saber de qué ejercicio son las series.
      */
     data class TarjetaEjercicio(val vistaTarjeta: View, val ejercicioId: Long)
+
     private val tarjetasEnPantalla = mutableListOf<TarjetaEjercicio>()
 
     //Variables de control de teimpo general
@@ -91,13 +92,13 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         }
 
         //Si nos ha pasado rutina preparamos la actividad para ella
-        if(idRutina != -1L){
+        if (idRutina != -1L) {
             idRutinaAsignada = idRutina
-            findViewById<TextView>(R.id.tvNombreEntrenamiento).text= "Entrenando Rutina"
+            findViewById<TextView>(R.id.tvNombreEntrenamiento).text = "Entrenando Rutina"
 
             //Recogemos y parseamos los IDs de los ejercicios de esta rutina
             val textoIds = intent.getStringExtra("IDS_EJERCICIOS_STRING")
-            if(!textoIds.isNullOrEmpty()){
+            if (!textoIds.isNullOrEmpty()) {
                 idsEjercicioRutina = textoIds.split(",").mapNotNull { it.toLongOrNull() }
             }
         }
@@ -110,8 +111,12 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         //Configuracio del bóton para añadir un ejercicio libremente mediante un AlterDialog
         findViewById<Button>(R.id.btnAgregarEjercicioEntrenamiento).setOnClickListener {
-            if(listaEjerciciosDisponibles.isEmpty()){
-                Toast.makeText(this, "Aún cargando o no hay ejerciocs en la BD...", Toast.LENGTH_SHORT).show()
+            if (listaEjerciciosDisponibles.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Aún cargando o no hay ejerciocs en la BD...",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
             mostrarBuscadorDeEjercicios()
@@ -128,57 +133,77 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * Si la actividad se inición con una rutina específica (`idsEjercicioRutina`),
      * busca esos ejercicios en la lista descargar y genera sus tarjetas automaticamente
      */
-    private fun cargarEjerciciosDelServidor(){
-        apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>>{
-            override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>){
-                if(response.isSuccessful && response.body() != null){
-                  listaEjerciciosDisponibles = response.body()!!.filterNotNull()
+    private fun cargarEjerciciosDelServidor() {
+        apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>> {
+            override fun onResponse(
+                call: Call<List<Ejercicio>>,
+                response: Response<List<Ejercicio>>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
+                    listaEjerciciosDisponibles = response.body()!!
 
-                    Toast.makeText(this@EntrenamientoActivoActivity, "Cargados ${listaEjerciciosDisponibles.size} ejercicios",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity,
+                        "Cargados ${listaEjerciciosDisponibles.size} ejercicios",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     val idsParaInyectar = idsEjercicioRutina
 
                     //Si hay IDs de rutina, generamos las tarjetas de forma automática
-                    if(idsParaInyectar != null){
-                        Toast.makeText(this@EntrenamientoActivoActivity, "Aduana: Recibidos ${idsParaInyectar.size} IDs",
-                            Toast.LENGTH_SHORT).show()
+                    if (idsParaInyectar != null) {
+                        Toast.makeText(
+                            this@EntrenamientoActivoActivity,
+                            "Aduana: Recibidos ${idsParaInyectar.size} IDs",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         var tarjetasCreadas = 0
 
-                        for(idBuscado in idsParaInyectar){
-                            val ejercicioEncontrado = listaEjerciciosDisponibles.find { it.id == idBuscado }
+                        for (idBuscado in idsParaInyectar) {
+                            val ejercicioEncontrado =
+                                listaEjerciciosDisponibles.find { it.id == idBuscado }
 
-                            if(ejercicioEncontrado != null){
+                            if (ejercicioEncontrado != null) {
                                 crearTarjetaEjercicio(ejercicioEncontrado)
                                 tarjetasCreadas++
                             }
                         }
-                        Toast.makeText(this@EntrenamientoActivoActivity, "Existo: Se han inyectado $tarjetasCreadas tarjetas",
-                            Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(this@EntrenamientoActivoActivity, "Error: La maleta llegó vacía (null)",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@EntrenamientoActivoActivity,
+                            "Existo: Se han inyectado $tarjetasCreadas tarjetas",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            this@EntrenamientoActivoActivity, "Modo Entrenamiento Libre",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
-            override fun onFailure(call: Call<List<Ejercicio>>, t: Throwable){
-                Toast.makeText(this@EntrenamientoActivoActivity, "Error de conexion ${t.message}",
-                    Toast.LENGTH_SHORT).show()
+
+            override fun onFailure(call: Call<List<Ejercicio>>, t: Throwable) {
+                Toast.makeText(
+                    this@EntrenamientoActivoActivity, "Error de conexion ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
+
     /**
      * Muestar un cuadro de diálgo con la lista de ejercicios disponibles.
      * Al seleccionar uno, se crea e inserta su tarjeta dinámica en la vista
      */
-    private fun mostrarBuscadorDeEjercicios(){
+    private fun mostrarBuscadorDeEjercicios() {
         val nombres = listaEjerciciosDisponibles.map { it.nombre }.toTypedArray()
         AlertDialog.Builder(this)
             .setTitle("Añadir Ejercicios")
             .setItems(nombres) { _, posicion ->
                 crearTarjetaEjercicio(listaEjerciciosDisponibles[posicion])
             }
+            .show()
     }
 
     /**
@@ -186,7 +211,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * configura sus escuchadores (como el botón de añadir serie), rellena los Spinners
      * y la añade al contenedor principal.
      */
-    private fun crearTarjetaEjercicio(ejercicio: Ejercicio){
+    private fun crearTarjetaEjercicio(ejercicio: Ejercicio) {
         if (ejercicio.id == null) return
 
         //1. Inflamos el diseño de la tarjeta base
@@ -196,7 +221,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         val tvNombre = vistaTarjeta.findViewById<TextView>(R.id.tvNombreEjercicioItem)
         tvNombre?.text = ejercicio.nombre
 
-        val contenedorDeSeries = vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+        val contenedorDeSeries =
+            vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
         val btnAnadirSerie = vistaTarjeta.findViewById<Button>(R.id.btnAgregarSerieItem)
         val spinnerEquip = vistaTarjeta.findViewById<Spinner>(R.id.spinnerEquipamiento)
 
@@ -210,7 +236,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         spinnerEquip.adapter = adapter
 
         // PROTECCÓN 2: Si el contenedor de series existe, configuramos todo su interior
-        if(contenedorDeSeries != null){
+        if (contenedorDeSeries != null) {
             //2. POr defecto, añadimos UNA fila de serie vacía para que el usuario pueda empezar a escribir
             agregarFilaDeSerie(contenedorDeSeries)
 
@@ -226,8 +252,12 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
             //5. Guardamos la referencia de la vista y el ID en la lista para poder leerla al guardar
             tarjetasEnPantalla.add(TarjetaEjercicio(vistaTarjeta, ejercicio.id))
 
-        }else{
-            Toast.makeText(this, "Error: No se encontró el contenedor de series en el XML", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(
+                this,
+                "Error: No se encontró el contenedor de series en el XML",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -235,8 +265,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * Inlfa el layout de una serie (Inputs de Repeticiones, Peso Y RPE)
      * y lo inyecta dentro del contedor de series de una Tarjeta de Ejercicio concreta
      */
-    private fun agregarFilaDeSerie(contenedorPadre: LinearLayout){
-        val vistaFilaSerie = layoutInflater .inflate(R.layout.item_serie_activa, null)
+    private fun agregarFilaDeSerie(contenedorPadre: LinearLayout) {
+        val vistaFilaSerie = layoutInflater.inflate(R.layout.item_serie_activa, null)
         contenedorPadre.addView(vistaFilaSerie)
     }
 
@@ -245,22 +275,26 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * Recorre todas las tarjetas infladas en pantalla, extrae los valores (peso, reps, notas)
      * escritos por el usuario, construye el objeto DTO `EntrenamientoRequest` y lo envía a la API
      */
-    private fun guardarEntrenamiento(){
+    private fun guardarEntrenamiento() {
         //Lista donde guardaremos los bloques de ejercicios listos para enviar
         val todosLosBloquesFianles = mutableListOf<EjercicioEntrenamientoRequest>()
         var ordenActual = 1
 
         //1.Recorremos cada tarjeta de ejercicio que hay guardad en nuestra lista de control
-        for(tarjeta in tarjetasEnPantalla){
+        for (tarjeta in tarjetasEnPantalla) {
 
             //Encontramos las vistas dontre de la tarjeta actual
-            val etNotas = tarjeta.vistaTarjeta.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etNotasEjercicio)
+            val etNotas =
+                tarjeta.vistaTarjeta.findViewById<com.google.android.material.textfield.TextInputEditText>(
+                    R.id.etNotasEjercicio
+                )
             val spinnerEquip = tarjeta.vistaTarjeta.findViewById<Spinner>(R.id.spinnerEquipamiento)
-            val contenedorDeSeries = tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
+            val contenedorDeSeries =
+                tarjeta.vistaTarjeta.findViewById<LinearLayout>(R.id.llContenedorSeriesDeEsteEjercicio)
 
             //Extraemos las notas (si estan vacies pasamos un null)
             val notasTexto = etNotas.text.toString().trim()
-            val notasFinales = if(notasTexto.isNotEmpty()) notasTexto else null
+            val notasFinales = if (notasTexto.isNotEmpty()) notasTexto else null
 
             //Extraemos el ID del equipameinto seleccionado (si es válido)
             val equipamientoSeleccionado = spinnerEquip.selectedItem as? Equipamiento
@@ -270,7 +304,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
             val seriesDeEstaTarjeta = mutableListOf<SerieRequest>()
 
             //2. Dentro de esta tarjeta, itermoas sobre cada fila de serie generada
-            for (i in 0 until contenedorDeSeries.childCount){
+            for (i in 0 until contenedorDeSeries.childCount) {
                 val filaSerie = contenedorDeSeries.getChildAt(i)
 
                 val etReps = filaSerie.findViewById<EditText>(R.id.etRepsSerie)
@@ -282,18 +316,18 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 val rpe = etRpe.text.toString().toIntOrNull()
 
                 //Si al menos hay reps o peso, se considera una serie vállida a registar
-                if(reps !=null || peso !=null ){
+                if (reps != null || peso != null) {
                     val nuevaSerie = SerieRequest(
                         repeticiones = reps ?: 0,
                         peso = peso ?: 0.0,
                         rpe = rpe ?: 0,
-                        tipo =  "Efectiva" // Opcional /Harcodea temporalmente
+                        tipo = "Efectiva" // Opcional /Harcodea temporalmente
                     )
                     seriesDeEstaTarjeta.add(nuevaSerie)
                 }
             }
             //3. Si el usuario rellenó algua serie válida en esta tarjeta, creamos el bloque del ejercicio
-            if(seriesDeEstaTarjeta.isNotEmpty()){
+            if (seriesDeEstaTarjeta.isNotEmpty()) {
                 val nuevoBloque = EjercicioEntrenamientoRequest(
                     ejercicioId = tarjeta.ejercicioId,
                     equipamientoId = equipamientoIdFinal,
@@ -307,7 +341,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         }
 
         //Validación para evitar guardar entrenamientos sin información
-        if(todosLosBloquesFianles.isEmpty()){
+        if (todosLosBloquesFianles.isEmpty()) {
             Toast.makeText(this, "Entrenoa algo", Toast.LENGTH_SHORT).show()
             return
         }
@@ -326,20 +360,28 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         )
 
         //5. Enviamos la peticón POST al servidor con Retrofit
-        apiService.guardarEntrenamiento(request).enqueue(object : Callback<Void>{
-            override fun onResponse(call: Call<Void>, response: Response<Void>){
-                if(response.isSuccessful){
-                    Toast.makeText(this@EntrenamientoActivoActivity, "Entrenamiento guardado",
-                        Toast.LENGTH_SHORT).show()
+        apiService.guardarEntrenamiento(request).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity, "Entrenamiento guardado",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
-                }else{
-                    Toast.makeText(this@EntrenamientoActivoActivity, "Error: ${response.code()}",
-                        Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity, "Error: ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable){
-                Toast.makeText(this@EntrenamientoActivoActivity, "Error de conexion", Toast.LENGTH_SHORT).show()
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(
+                    this@EntrenamientoActivoActivity,
+                    "Error de conexion",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -371,19 +413,28 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * LLmada a la API que cargo todos los equipamisntos (Mancuernas, Barra, etc.)
      * para rellenar los adaptadores de los Spinners generados dinámicamente.
      */
-    private fun cargarEquipamientos(){
-        apiService.obtenerTodosEquipamientos().enqueue(object : Callback<List<Equipamiento>>{
-            override fun onResponse(call: Call<List<Equipamiento>>, response: Response<List<Equipamiento>>){
-                if(response.isSuccessful && response.body() != null){
+    private fun cargarEquipamientos() {
+        apiService.obtenerTodosEquipamientos().enqueue(object : Callback<List<Equipamiento>> {
+            override fun onResponse(
+                call: Call<List<Equipamiento>>,
+                response: Response<List<Equipamiento>>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
                     listaEquipamiento = response.body()!!
-                }else{
-                    Toast.makeText(this@EntrenamientoActivoActivity, "No hay equipamientos", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@EntrenamientoActivoActivity,
+                        "No hay equipamientos",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Equipamiento>>, t: Throwable) {
-                Toast.makeText(this@EntrenamientoActivoActivity, "Error al cargar los equipamientos",
-                    Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@EntrenamientoActivoActivity, "Error al cargar los equipamientos",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
