@@ -34,15 +34,15 @@ public class Usuario {
     private String email;
 
     /**
-     * Contraseña del usuario (almacenada en formato Hash o cifrada, nunca en texto plano).
+     * Contraseña del usuario (almacenada en formato Hash).
      * <p>
-     * @JsonIgnore: Es una medida de seguridad fundamental. Evita que Jackson (el serializador de Spring)
-     * incluya este campo al convertir el objeto a JSON. Así, la contraseña (incluso estando cifrada)
-     * nunca sale del servidor hacia el cliente en las respuestas HTTP.
+     * @JsonProperty(access = Access.WRITE_ONLY): Permite que Spring reciba la
+     * contraseña desde el JSON de Android al registrar, pero evita que la
+     * devuelva en las respuestas HTTP por seguridad.
      * </p>
      */
     @Column(nullable = false)
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     /**

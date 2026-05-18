@@ -39,7 +39,7 @@ class RegistroActivity : AppCompatActivity() {
         //Funcion del boton Registar
         btnRegistrar.setOnClickListener {
             val nombre = etNombre.text.toString().trim()
-            val email = etEmail.toString().trim()
+            val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
             //Validacion para que los campos no este vacios
