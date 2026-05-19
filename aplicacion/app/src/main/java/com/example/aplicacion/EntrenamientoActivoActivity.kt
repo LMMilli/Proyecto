@@ -2,6 +2,8 @@ package com.example.aplicacion
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewParent
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Chronometer
@@ -235,14 +237,42 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerEquip.adapter = adapter
 
+        spinnerEquip.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long){
+                val equipamientoSeleccionado = parent?.getItemAtPosition(position) as? Equipamiento
+
+                val esPesoCorporal = equipamientoSeleccionado?.nombre?.equals("Peso Corporal", ignoreCase = true) == true
+
+                if(contenedorDeSeries !=null){
+                    //Recorremos las series creadas para actualizar su estado
+                    for(i in 0 until contenedorDeSeries.childCount){
+                        val filaSerie = contenedorDeSeries.getChildAt(i)
+                        val etPeso = filaSerie.findViewById<EditText>(R.id.etPesoSerie)
+
+                        if(esPesoCorporal){
+                            etPeso.isEnabled = false
+                            etPeso.setText("0")
+                        }else{
+                            etPeso.isEnabled = true
+                            if(etPeso.text.toString()== "0") etPeso.setText("")
+                        }
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+
+
+
         // PROTECCÓN 2: Si el contenedor de series existe, configuramos todo su interior
         if (contenedorDeSeries != null) {
             //2. POr defecto, añadimos UNA fila de serie vacía para que el usuario pueda empezar a escribir
-            agregarFilaDeSerie(contenedorDeSeries)
+            agregarFilaDeSerie(contenedorDeSeries, spinnerEquip)
 
             //3. Configuración del botón "Añadir Serie" interno de este ejercicio específico
             btnAnadirSerie?.setOnClickListener {
-                agregarFilaDeSerie(contenedorDeSeries)
+                agregarFilaDeSerie(contenedorDeSeries,spinnerEquip)
                 iniciarCronometroDescanso() //Al añaidir una serie se inica el descanso
             }
 
@@ -265,8 +295,22 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
      * Inlfa el layout de una serie (Inputs de Repeticiones, Peso Y RPE)
      * y lo inyecta dentro del contedor de series de una Tarjeta de Ejercicio concreta
      */
-    private fun agregarFilaDeSerie(contenedorPadre: LinearLayout) {
+    private fun agregarFilaDeSerie(contenedorPadre: LinearLayout, spinnerEquip: Spinner) {
         val vistaFilaSerie = layoutInflater.inflate(R.layout.item_serie_activa, null)
+
+        val etPeso = vistaFilaSerie.findViewById<EditText>(R.id.etPesoSerie)
+
+        //Comprobas qué hay seleccionado actualemente en el Spinner
+        val equipamientoSeleccionado = spinnerEquip.selectedItem as? Equipamiento
+        val esPesoCorporal = equipamientoSeleccionado?.nombre?.equals("Peso Corporal", ignoreCase = true) == true
+
+        if (esPesoCorporal){
+            etPeso.isEnabled = false
+            etPeso.setText("0")
+        }else{
+            etPeso.isEnabled = true
+        }
+
         contenedorPadre.addView(vistaFilaSerie)
     }
 

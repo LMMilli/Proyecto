@@ -95,7 +95,7 @@
             android:layout_height="60dp"
             android:id="@+id/btnLogout"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:text="CERRAR SESION"
+            android:text="CERRAR SESIÓN"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#D32F2F"

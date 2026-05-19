@@ -14,13 +14,19 @@ import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.Medida
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class MedidasActivity : AppCompatActivity() {
    private lateinit var apiService: ApiService
@@ -28,6 +34,7 @@ class MedidasActivity : AppCompatActivity() {
    private lateinit var graficaPeso: LineChart
    private lateinit var progressBar: ProgressBar
    private lateinit var tvEmptyState: TextView
+
    private var idUsuario: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +47,8 @@ class MedidasActivity : AppCompatActivity() {
         tvEmptyState = findViewById(R.id.tvEmptyState)
 
         val btnNuevo = findViewById<MaterialButton>(R.id.btnIrNuevaMedida)
+
+
 
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
         apiService = ApiClient.retrofit.create(ApiService::class.java)
@@ -58,6 +67,9 @@ class MedidasActivity : AppCompatActivity() {
     }
 
     private fun cargarHistorial(){
+        val idioma = Locale.forLanguageTag("es-ES")
+        val formatoEjeX = DateTimeFormatter.ofPattern("d MMM", idioma)
+
         if(idUsuario == -1L) return
 
         //1. Mostar progres y ocultar lista/estado vación mientras carga
@@ -91,15 +103,30 @@ class MedidasActivity : AppCompatActivity() {
                             textoHistorial
                         )
 
+
+
                         //DIBUJAR LA GRAFIA
                         //Ordenar las meidas por ID o FECHA para que la grafai vaya de izquierda a derecha
                         val medidasOrdenadas = listaMedidas.sortedBy { it.id }
 
                         //Convertimos cada peso en un punto de la gráfica
                         val puntosGrafica = ArrayList<Entry>()
+                        val etiquetasFechas = ArrayList<String>()
+
                         medidasOrdenadas.forEachIndexed { index, medida ->
                             puntosGrafica.add(Entry(index.toFloat(), medida.pesoCorporal.toFloat()))
+
+                            val fechaString = try{
+                                medida.fecha?.let{
+                                    LocalDateTime.parse(it).format(formatoEjeX)
+                                }?: ""
+                            }catch (e: Exception){
+                                ""
+                            }
+                            etiquetasFechas.add(fechaString)
                         }
+
+
 
                         //Creamos la línea y le damos estilos
                         val lineaDatos = LineDataSet(puntosGrafica , "Evolucópn de Peso (kg)")
@@ -116,11 +143,28 @@ class MedidasActivity : AppCompatActivity() {
                         val datosFinales = LineData(lineaDatos)
                         graficaPeso.data = datosFinales
 
+
+                        val xAxis = graficaPeso.xAxis
+                        xAxis.position = XAxis.XAxisPosition.BOTTOM
+                        xAxis.setDrawGridLines(false)
+                        xAxis.setDrawAxisLine(false)
+                        xAxis.granularity = 1f
+                        xAxis.isGranularityEnabled = true
+
+                        xAxis.valueFormatter = object : ValueFormatter(){
+                            override fun getAxisLabel(value: Float, axis: com.github.mikephil.charting.components.AxisBase): String? {
+                                val index = value.toInt()
+                                return if (index >= 0 && index < etiquetasFechas.size){
+                                    etiquetasFechas[index]
+                                }else{
+                                    ""
+                                }
+                            }
+                        }
+
                         //Retoques visuales para que la gráfica quede mas limpia
                         graficaPeso.description.isEnabled = false
                         graficaPeso.axisRight.isEnabled = false
-                        graficaPeso.xAxis.setDrawAxisLine(false)
-                        graficaPeso.xAxis.setDrawGridLines(false) //Quitar la cuadricual
                         graficaPeso.animateX(1200)
 
                         //Refrescamos la pantalla

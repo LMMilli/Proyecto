@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/btnIrNuevoObjetivo"
-        android:text="ESTABLECRE NUEVA META"
+        android:text="ESTABLECER NUEVA META"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

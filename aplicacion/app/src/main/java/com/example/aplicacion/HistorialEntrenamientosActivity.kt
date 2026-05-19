@@ -20,6 +20,9 @@ import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class HistorialEntrenamientosActivity : AppCompatActivity() {
     private lateinit var apiService: ApiService
@@ -88,8 +91,21 @@ class HistorialEntrenamientosActivity : AppCompatActivity() {
                         //Si hay historial
                         lvHistorial.visibility = View.VISIBLE
 
+                        val idioma = Locale.forLanguageTag("es-ES")
+                        //Forma to para la fecha
+                        val formateador = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy, HH:mm 'h'", idioma)
                         //Formater el texto de la lista para que quede bonito
-                        val nombres = listaEntrenamientos.map { "Entrenamiento: ${it.fecha ?: "Sin fecha"}" }
+                        val nombres = listaEntrenamientos.map { entrenamiento ->
+                            val fechaFormateada = try {
+                                entrenamiento.fecha?.let { fechaIso ->
+                                    LocalDate.parse(fechaIso).format(formateador)
+
+                                }?: "Sin fecha"
+                            }catch (e: Exception){
+                                "Fecha inválida"
+                            }
+                            "Entrenamiento: $fechaFormateada"
+                        }
 
                         lvHistorial.adapter = ArrayAdapter(
                             this@HistorialEntrenamientosActivity,

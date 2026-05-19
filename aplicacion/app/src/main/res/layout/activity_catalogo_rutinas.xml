@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Seleccion una rutina para entrenar hoy"
+        android:text="Selecciona una rutina para entrenar hoy"
         android:textSize="16sp"
         android:textColor="@color/textColorSecondary"
         android:layout_marginBottom="24dp"/>
