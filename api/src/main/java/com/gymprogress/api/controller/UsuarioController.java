@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -60,7 +62,10 @@ public class UsuarioController {
         // 3. Sustituir la contraseña plana por la versión cifrada en el objeto usuario.
         usuario.setPassword(passwordCifrada);
 
-        // 4. Persistir el usuario de forma segura en la base de datos.
+        // 4. Guardar la fecha de registro del usuario
+        usuario.setFechaRegistro(LocalDate.now());
+
+        // 5. Persistir el usuario de forma segura en la base de datos.
         return usuarioRepository.save(usuario);
     }
 

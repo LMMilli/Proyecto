@@ -52,7 +52,7 @@ class CatalogoRutinasActivity : AppCompatActivity() {
                         //Transforma la lista de objetos Ruitna en una lista de textos
                         val textRutinas = listaRutinas.map { rutina ->
                             val numEjercicios = rutina.ejercicio?.size ?: 0
-                            "${rutina.nombre} ($numEjercicios ejercicios)"
+                            "${rutina.nombre} ($numEjercicios ejercicios) -- ${rutina.tipo}"
                         }
 
                         //Se ponen en la ListView
@@ -83,6 +83,7 @@ class CatalogoRutinasActivity : AppCompatActivity() {
             val idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
             intent.putExtra("ID_USUARIO", idUsuario)
             intent.putExtra("ID_RUTINA", rutinaSeleccionada.id)
+            intent.putExtra("TIPO_RUTINA", rutinaSeleccionada.tipo)
 
             val idsLista = rutinaSeleccionada.ejercicio?.mapNotNull { it.id } ?: emptyList()
             val idsTexto = idsLista.joinToString(",")

@@ -1,6 +1,9 @@
 package com.example.aplicacion
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewParent
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Spinner
@@ -20,6 +23,9 @@ import retrofit2.Response
 
 class CrearRutinaActivity : AppCompatActivity() {
     private var listaEjerciciosOriginal : List<Ejercicio> = emptyList()
+    private var listaEjerciciosFiltrada : List<Ejercicio> = emptyList()
+
+    private lateinit var lvEjercicios: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,24 +33,29 @@ class CrearRutinaActivity : AppCompatActivity() {
 
         // Enlaces a la vista actualizados a los nuevos componentes Material
         val etNombre = findViewById<TextInputEditText>(R.id.etNombreRutina)
-        val lvEjercicios = findViewById<ListView>(R.id.lvEjercicios)
+        lvEjercicios = findViewById(R.id.lvEjercicios)
         val btnGuarda = findViewById<MaterialButton>(R.id.btnGuardarRutina)
         val spinner = findViewById<Spinner>(R.id.spDificultad)
 
         val apiService = ApiClient.retrofit.create(ApiService::class.java)
+
+        //Configurar Spinner con las opciones
+        val opcionesTipo = listOf("Completo", "Sin equipamiento", "Peso libre", "Máquinas")
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesTipo)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = spinnerAdapter
+
+
 
         // Obtener los ejercicios disponibles
         apiService.obtenerEjercicios().enqueue(object : Callback<List<Ejercicio>> {
             override fun onResponse(call: Call<List<Ejercicio>>, response: Response<List<Ejercicio>>){
                 if(response.isSuccessful && response.body() != null){
                     listaEjerciciosOriginal = response.body()!!
-                    // Extraemos los nombre para mostrarlos en la lista
-                    val nombresEjercicios = listaEjerciciosOriginal.map { it.nombre }
 
-                    // LLenamos la lista visual con los nombre y casillas
-                    val adapter = ArrayAdapter(this@CrearRutinaActivity, android.R.layout.simple_list_item_multiple_choice, nombresEjercicios)
+                    println("DEBUG_API: ${listaEjerciciosOriginal.firstOrNull()}")
 
-                    lvEjercicios.adapter = adapter
+                    filtrarEjerciciosPorTipo(0)
                 }
             }
 
@@ -53,6 +64,18 @@ class CrearRutinaActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         })
+
+        //Escuchar los camibos en el Spinner para filtrar la lista
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                // solo se filtra si la lista original a cargado
+                if(listaEjerciciosOriginal.isNotEmpty()){
+                    filtrarEjerciciosPorTipo(position)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
         btnGuarda.setOnClickListener {
             val nombreRutina = etNombre.text.toString().trim()
@@ -63,13 +86,16 @@ class CrearRutinaActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            //Obetner el texto seleccionado en el Spinner
+            val tipoRutinaSeleccionado = spinner.selectedItem.toString()
+
             // Recojer el id de los ejercicios selecionados para las rutinas
             val ejerciciosSelecionadosIds = mutableListOf<Long>()
             val posicionesMarcadas = lvEjercicios.checkedItemPositions
 
             for(i in 0 until lvEjercicios.count){
                 if(posicionesMarcadas.get(i)){
-                    val idEjercicio = listaEjerciciosOriginal[i].id
+                    val idEjercicio = listaEjerciciosFiltrada[i].id
                     if(idEjercicio != null){
                         ejerciciosSelecionadosIds.add(idEjercicio)
                     }
@@ -83,7 +109,7 @@ class CrearRutinaActivity : AppCompatActivity() {
             }
 
             // Creamos el DTO y lo enviamos
-            val request = RutinaRequest(nombreRutina, ejerciciosSelecionadosIds)
+            val request = RutinaRequest(nombreRutina, ejerciciosSelecionadosIds, tipoRutinaSeleccionado)
             apiService.crearRutina(request).enqueue(object : Callback<Rutina>{
                 override fun onResponse(call: Call<Rutina>, response: Response<Rutina>){
                     if(response.isSuccessful){
@@ -101,5 +127,33 @@ class CrearRutinaActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    //Metodo para filtar y refrescar el ListView
+    private fun filtrarEjerciciosPorTipo(posicionSpinner: Int){
+        listaEjerciciosFiltrada = when(posicionSpinner){
+            //0 ->"Completo": Todos los ejercicios
+            0 -> listaEjerciciosOriginal
+
+            //1 -> "Sin equipamiento": ID 1 (Peso Corporal)
+            1 -> listaEjerciciosOriginal.filter { ejercicio -> ejercicio.equipamiento?.any { it.id == 1L} == true }
+
+            //2 -> "Peso libre": IDs (Barra) y 3 (Mancuerna)
+            2 -> listaEjerciciosOriginal.filter { ejercicio -> ejercicio.equipamiento?.any { it.id == 2L || it.id == 3L} == true }
+
+            //3 -> "Maquinas": ID 4 (Maquina)
+            3 -> listaEjerciciosOriginal.filter { ejercicio -> ejercicio.equipamiento?.any {it.id == 4L} == true }
+
+            else -> listaEjerciciosOriginal
+        }
+
+        //Actualizamos la vista con los nombre filtrados
+        val nombresEjercicios = listaEjerciciosFiltrada.map { it.nombre }
+        val adapter = ArrayAdapter(
+            this@CrearRutinaActivity,
+            android.R.layout.simple_list_item_multiple_choice,
+            nombresEjercicios
+        )
+        lvEjercicios.adapter = adapter
     }
 }

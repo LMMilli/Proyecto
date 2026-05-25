@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.aplicacion.api.ApiClient
@@ -40,6 +41,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
     //Datos del usuario y de la rutina actual
     private var idUsuario: Long = -1L
     private var idRutinaAsignada: Long? = null
+
+    private var tipoRutina: String = ""
     private var idsEjercicioRutina: List<Long>? = null
 
     //Catálogos cargados desde el servidor
@@ -67,6 +70,24 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entrenamiento_activo)
 
+        //Control para volver atras
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                AlertDialog.Builder(this@EntrenamientoActivoActivity)
+                    .setTitle("¿Abandonar entrenamiento?")
+                    .setMessage("Si sales ahora perderas todo el progreso. ¿Estás seguro?")
+                    .setPositiveButton("Sí, salir"){ _, _ ->
+                        finish()
+                    }
+                    .setNegativeButton("Cancelar"){ dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setCancelable(false)
+                    .show()
+            }
+        })
+
+
         //Inicialización de vistas de tiempo de descanso
         flOverlayDescanso = findViewById(R.id.flOverlayDescanso)
         choronoDescanso = findViewById(R.id.chronoDescanso)
@@ -83,6 +104,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         //Recepcióln de datos desde la actividad anterior a través del Intent
         idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
         val idRutina = intent.getLongExtra("ID_RUTINA", -1L)
+        tipoRutina = intent.getStringExtra("TIPO_RUTINA") ?: ""
 
         //Carga de catálogos necesarios para los Spinners y menús
         cargarEquipamientos()
@@ -126,6 +148,18 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         //Botón final para recopliar los datos y enviarlos a la base de datos
         findViewById<Button>(R.id.btnFinalizarEntrenamiento).setOnClickListener {
+            AlertDialog.Builder(this@EntrenamientoActivoActivity)
+                .setTitle("Finalizar Entrenamiento")
+                .setMessage("¿Has terminado de registrar todas tus series? Se guardará el entrenamiento en tu historial.")
+                .setPositiveButton("Sí, guardar") { _, _ ->
+                    // Solo si el usuario confirma, llamamos a la función
+                    guardarEntrenamiento()
+                }
+                .setNegativeButton("Seguir entrenando") { dialog, _ ->
+                    // Si cancela, simplemente cerramos el mensaje
+                    dialog.dismiss()
+                }
+                .show()
             guardarEntrenamiento()
         }
     }
@@ -231,11 +265,25 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         //Preparamos los datos del Spinner de equipamiento (añadiendo una opcion por defecto=
         val listaParaSpinner = mutableListOf<Equipamiento>()
         listaParaSpinner.add(Equipamiento(-1L, "Seleccionar equipamiento..."))
-        listaParaSpinner.addAll(listaEquipamiento)
+
+        val equiposDelEjercicio = ejercicio.equipamiento ?: emptyList()
+
+        if(equiposDelEjercicio.isNotEmpty()){
+            listaParaSpinner.addAll(equiposDelEjercicio)
+        }else{
+            listaParaSpinner.addAll(listaEquipamiento)
+        }
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listaParaSpinner)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerEquip.adapter = adapter
+
+        if(tipoRutina.isNotBlank()){
+            val indicePreseleccion = obtenerIndicePorTipoRutina(tipoRutina, listaParaSpinner)
+            if(indicePreseleccion > 0){
+                spinnerEquip.setSelection(indicePreseleccion)
+            }
+        }
 
         spinnerEquip.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long){
@@ -481,5 +529,19 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 ).show()
             }
         })
+    }
+
+    private fun obtenerIndicePorTipoRutina(tipo: String, listaOpciones: List<Equipamiento>): Int{
+        val index = when (tipo.lowercase().trim()){
+            "sin equipamiento" -> listaOpciones.indexOfFirst { it.id == 1L }
+            "peso libre" ->{
+                val idxBarra = listaOpciones.indexOfFirst { it.id == 2L }
+                if (idxBarra != -1) idxBarra else listaOpciones.indexOfFirst { it.id == 3L }
+            }
+            "máquinas", "maquinas" -> listaOpciones.indexOfFirst { it.id == 4L }
+            else -> -1
+        }
+
+        return if(index != -1) index else 0
     }
 }

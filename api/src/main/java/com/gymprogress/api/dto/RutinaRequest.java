@@ -23,6 +23,8 @@ public class RutinaRequest {
      */
     private List<Long> ejercicioIds;
 
+    private String tipo;
+
     /**
      * Constructor por defecto vacío.
      * Necesario para que el framework de Spring Boot (a través de Jackson) pueda
@@ -53,5 +55,13 @@ public class RutinaRequest {
 
     public void setEjercicioIds(List<Long> ejercicioIds) {
         this.ejercicioIds = ejercicioIds;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

@@ -75,7 +75,7 @@ public class EjercicioController {
             List<EquipamientoRequest> equiposDTO = entidad.getEquiposDisponibles().stream()
                     .map(this::convertirAEquipamientoDTO)
                     .collect(Collectors.toList());
-            dto.setEquiposDisponibles(equiposDTO);
+            dto.setEquipamientoDisponibles(equiposDTO);
         }
 
         return dto;

@@ -36,6 +36,7 @@ public class RutinaController {
         Rutina nuevaRutina = new Rutina();
         nuevaRutina.setNombre(request.getNombre());
         nuevaRutina.setEjercicios(ejercicios);
+        nuevaRutina.setTipo(request.getTipo());
 
         Rutina rutinaGuardada = rutinaRepository.save(nuevaRutina);
 
@@ -59,6 +60,7 @@ public class RutinaController {
         RutinaResponse response = new RutinaResponse();
         response.setId(rutina.getId());
         response.setNombre(rutina.getNombre());
+        response.setTipo(rutina.getTipo());
 
         if (rutina.getEjercicios() != null) {
             List<EjercicioResponse> ejerciciosDto = rutina.getEjercicios().stream().map(ej -> {

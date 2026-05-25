@@ -60,7 +60,4 @@ public class EjercicioRequest {
     public void setEquipamientoDisponibles(List<EquipamientoRequest> equipamientoDisponibles) {
         this.equipamientoDisponibles = equipamientoDisponibles;
     }
-
-    public void setEquiposDisponibles(List<EquipamientoRequest> equiposDTO) {
-    }
 }

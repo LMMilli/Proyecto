@@ -5,6 +5,7 @@ import java.util.List;
 public class RutinaResponse {
     private Long id;
     private String nombre;
+    private String tipo;
     private List<EjercicioResponse> ejercicios;
 
     public Long getId() {
@@ -29,5 +30,13 @@ public class RutinaResponse {
 
     public void setEjercicios(List<EjercicioResponse> ejercicios) {
         this.ejercicios = ejercicios;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

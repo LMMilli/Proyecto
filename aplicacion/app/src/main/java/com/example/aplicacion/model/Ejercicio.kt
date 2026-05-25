@@ -8,6 +8,6 @@ data class Ejercicio(
     val grupoMuscular: String,
     val descripcion : String,
 
-    @SerializedName("equiposDisponibles")
-    val equipamiento: List<Equipamiento>
+    @SerializedName("equipamientoDisponibles")
+    val equipamiento: List<Equipamiento>?
 )

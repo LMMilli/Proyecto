@@ -33,6 +33,9 @@ public class Rutina {
     @Column(nullable = false)
     private String nombre;
 
+    @Column(nullable = false)
+    private String tipo;
+
     /**
      * Lista de ejercicios que componen esta rutina.
      * <p>
@@ -60,10 +63,11 @@ public class Rutina {
      * Constructor con parámetros.
      * Facilita la instanciación de rutinas completas desde el código (ej. para inicializar datos base).
      */
-    public Rutina(Long id, String nombre, List<Ejercicio> ejercicios) {
+    public Rutina(Long id, String nombre, List<Ejercicio> ejercicios, String tipo) {
         this.id = id;
         this.nombre = nombre;
         this.ejercicios = ejercicios;
+        this.tipo = tipo;
     }
 
     // --- Getters y Setters ---
@@ -90,5 +94,13 @@ public class Rutina {
 
     public void setEjercicios(List<Ejercicio> ejercicios) {
         this.ejercicios = ejercicios;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
