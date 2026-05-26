@@ -76,4 +76,25 @@ public class ObjetivoController {
         // Spring Boot automáticamente lo envolverá en un 200 OK y lo serializará a JSON.
         return objetivioRepository.findByUsuarioId(usuarioId);
     }
+
+    /**
+     * Endpoint para actualizar únicamente el estado de completado de un objetivo.
+     * Responde a peticiones HTTP PUT en la ruta "/api/objetivos/{id}/estado".
+     */
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestParam boolean completado) {
+        // 1. Buscamos el objetivo en la base de datos
+        var objetivoOpt = objetivioRepository.findById(id);
+
+        if(objetivoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 2. Modificamos solo el estado
+        Objetivo obj = objetivoOpt.get();
+        obj.setCompletado(completado);
+
+        // 3. Guardamos los cambios
+        return ResponseEntity.ok(objetivioRepository.save(obj));
+    }
 }

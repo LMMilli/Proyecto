@@ -1,5 +1,6 @@
 package com.example.aplicacion
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewParent
@@ -71,15 +72,15 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_entrenamiento_activo)
 
         //Control para volver atras
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 AlertDialog.Builder(this@EntrenamientoActivoActivity)
                     .setTitle("¿Abandonar entrenamiento?")
                     .setMessage("Si sales ahora perderas todo el progreso. ¿Estás seguro?")
-                    .setPositiveButton("Sí, salir"){ _, _ ->
+                    .setPositiveButton("Sí, salir") { _, _ ->
                         finish()
                     }
-                    .setNegativeButton("Cancelar"){ dialog, _ ->
+                    .setNegativeButton("Cancelar") { dialog, _ ->
                         dialog.dismiss()
                     }
                     .setCancelable(false)
@@ -160,7 +161,6 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                     dialog.dismiss()
                 }
                 .show()
-            guardarEntrenamiento()
         }
     }
 
@@ -178,21 +178,12 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     listaEjerciciosDisponibles = response.body()!!
 
-                    Toast.makeText(
-                        this@EntrenamientoActivoActivity,
-                        "Cargados ${listaEjerciciosDisponibles.size} ejercicios",
-                        Toast.LENGTH_SHORT
-                    ).show()
 
                     val idsParaInyectar = idsEjercicioRutina
 
                     //Si hay IDs de rutina, generamos las tarjetas de forma automática
                     if (idsParaInyectar != null) {
-                        Toast.makeText(
-                            this@EntrenamientoActivoActivity,
-                            "Aduana: Recibidos ${idsParaInyectar.size} IDs",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
 
                         var tarjetasCreadas = 0
 
@@ -205,16 +196,8 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                                 tarjetasCreadas++
                             }
                         }
-                        Toast.makeText(
-                            this@EntrenamientoActivoActivity,
-                            "Existo: Se han inyectado $tarjetasCreadas tarjetas",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     } else {
-                        Toast.makeText(
-                            this@EntrenamientoActivoActivity, "Modo Entrenamiento Libre",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
                     }
                 }
             }
@@ -268,9 +251,9 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
         val equiposDelEjercicio = ejercicio.equipamiento ?: emptyList()
 
-        if(equiposDelEjercicio.isNotEmpty()){
+        if (equiposDelEjercicio.isNotEmpty()) {
             listaParaSpinner.addAll(equiposDelEjercicio)
-        }else{
+        } else {
             listaParaSpinner.addAll(listaEquipamiento)
         }
 
@@ -278,39 +261,48 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerEquip.adapter = adapter
 
-        if(tipoRutina.isNotBlank()){
+        if (tipoRutina.isNotBlank()) {
             val indicePreseleccion = obtenerIndicePorTipoRutina(tipoRutina, listaParaSpinner)
-            if(indicePreseleccion > 0){
+            if (indicePreseleccion > 0) {
                 spinnerEquip.setSelection(indicePreseleccion)
             }
         }
 
-        spinnerEquip.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long){
-                val equipamientoSeleccionado = parent?.getItemAtPosition(position) as? Equipamiento
+        spinnerEquip.onItemSelectedListener =
+            object : android.widget.AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: android.widget.AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val equipamientoSeleccionado =
+                        parent?.getItemAtPosition(position) as? Equipamiento
 
-                val esPesoCorporal = equipamientoSeleccionado?.nombre?.equals("Peso Corporal", ignoreCase = true) == true
+                    val esPesoCorporal = equipamientoSeleccionado?.nombre?.equals(
+                        "Peso Corporal",
+                        ignoreCase = true
+                    ) == true
 
-                if(contenedorDeSeries !=null){
-                    //Recorremos las series creadas para actualizar su estado
-                    for(i in 0 until contenedorDeSeries.childCount){
-                        val filaSerie = contenedorDeSeries.getChildAt(i)
-                        val etPeso = filaSerie.findViewById<EditText>(R.id.etPesoSerie)
+                    if (contenedorDeSeries != null) {
+                        //Recorremos las series creadas para actualizar su estado
+                        for (i in 0 until contenedorDeSeries.childCount) {
+                            val filaSerie = contenedorDeSeries.getChildAt(i)
+                            val etPeso = filaSerie.findViewById<EditText>(R.id.etPesoSerie)
 
-                        if(esPesoCorporal){
-                            etPeso.isEnabled = false
-                            etPeso.setText("0")
-                        }else{
-                            etPeso.isEnabled = true
-                            if(etPeso.text.toString()== "0") etPeso.setText("")
+                            if (esPesoCorporal) {
+                                etPeso.isEnabled = false
+                                etPeso.setText("0")
+                            } else {
+                                etPeso.isEnabled = true
+                                if (etPeso.text.toString() == "0") etPeso.setText("")
+                            }
                         }
                     }
                 }
+
+                override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
             }
-
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
-        }
-
 
 
         // PROTECCÓN 2: Si el contenedor de series existe, configuramos todo su interior
@@ -320,7 +312,7 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
 
             //3. Configuración del botón "Añadir Serie" interno de este ejercicio específico
             btnAnadirSerie?.setOnClickListener {
-                agregarFilaDeSerie(contenedorDeSeries,spinnerEquip)
+                agregarFilaDeSerie(contenedorDeSeries, spinnerEquip)
                 iniciarCronometroDescanso() //Al añaidir una serie se inica el descanso
             }
 
@@ -347,15 +339,37 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         val vistaFilaSerie = layoutInflater.inflate(R.layout.item_serie_activa, null)
 
         val etPeso = vistaFilaSerie.findViewById<EditText>(R.id.etPesoSerie)
+        // 1. Instanciamos el EditText del RPE que antes no estabas capturando aquí
+        val etRpe = vistaFilaSerie.findViewById<EditText>(R.id.etRpeSerie)
+
+        // 2. Creamos el filtro que evalúa lo que el usuario intenta escribir
+        val filtroRpe = android.text.InputFilter { source, _, _, dest, dstart, dend ->
+            try {
+                // Simulamos cómo quedaría el texto si permitimos la pulsación
+                val inputStr = dest.subSequence(0, dstart).toString() + source + dest.subSequence(dend, dest.length)
+
+                if (inputStr.isEmpty()) return@InputFilter null // Permitimos borrar (dejarlo vacío)
+
+                val valor = inputStr.toInt()
+                // Si está entre 1 y 10, devolvemos null (que significa "aceptar cambio"). Si no, "" (bloquear).
+                if (valor in 1..10) null else ""
+            } catch (e: NumberFormatException) {
+                "" // Bloqueamos si intenta pegar algo que no sea un número
+            }
+        }
+
+        // 3. Le aplicamos el filtro al campo
+        etRpe.filters = arrayOf(filtroRpe)
 
         //Comprobas qué hay seleccionado actualemente en el Spinner
         val equipamientoSeleccionado = spinnerEquip.selectedItem as? Equipamiento
-        val esPesoCorporal = equipamientoSeleccionado?.nombre?.equals("Peso Corporal", ignoreCase = true) == true
+        val esPesoCorporal =
+            equipamientoSeleccionado?.nombre?.equals("Peso Corporal", ignoreCase = true) == true
 
-        if (esPesoCorporal){
+        if (esPesoCorporal) {
             etPeso.isEnabled = false
             etPeso.setText("0")
-        }else{
+        } else {
             etPeso.isEnabled = true
         }
 
@@ -406,6 +420,13 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                 val reps = etReps.text.toString().toIntOrNull()
                 val peso = etPeso.text.toString().toDoubleOrNull()
                 val rpe = etRpe.text.toString().toIntOrNull()
+
+                if (rpe != null && rpe !in 1..10) {
+                    // Si escribió un RPE y no está entre 1 y 10, avisamos y abortamos el guardado
+                    Toast.makeText(this, "Asegúrate de que todos los RPE estén entre 1 y 10", Toast.LENGTH_LONG).show()
+                    return // El "return" corta la función: no se envía nada a la API
+                }
+
 
                 //Si al menos hay reps o peso, se considera una serie vállida a registar
                 if (reps != null || peso != null) {
@@ -459,12 +480,27 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
                         this@EntrenamientoActivoActivity, "Entrenamiento guardado",
                         Toast.LENGTH_SHORT
                     ).show()
+                    // 1. Creamos la intención de ir al historial
+                    val intentHistorial = Intent(
+                        this@EntrenamientoActivoActivity,
+                        HistorialEntrenamientosActivity::class.java
+                    )
+
+                    // 2. Le pasamos el ID del usuario para que pueda cargar sus datos
+                    intentHistorial.putExtra("ID_USUARIO", idUsuario)
+
+                    // 3. Opcional pero recomendado: Limpiamos las actividades intermedias (como el catálogo de rutinas)
+                    // para que si el usuario pulsa "atrás" en el historial, no vuelva al entrenamiento que acaba de hacer.
+                    intentHistorial.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+                    // 4. Iniciamos la nueva actividad y cerramos la actual
+                    startActivity(intentHistorial)
                     finish()
                 } else {
-                    Toast.makeText(
-                        this@EntrenamientoActivoActivity, "Error: ${response.code()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val errorRealDelServidor = response.errorBody()?.string() ?: "Razón desconocida"
+
+                    Toast.makeText(this@EntrenamientoActivoActivity, "Error 400: $errorRealDelServidor", Toast.LENGTH_LONG).show()
+                    println("❌ ERROR 400 DEL BACKEND: $errorRealDelServidor")
                 }
             }
 
@@ -531,17 +567,18 @@ class EntrenamientoActivoActivity : AppCompatActivity() {
         })
     }
 
-    private fun obtenerIndicePorTipoRutina(tipo: String, listaOpciones: List<Equipamiento>): Int{
-        val index = when (tipo.lowercase().trim()){
+    private fun obtenerIndicePorTipoRutina(tipo: String, listaOpciones: List<Equipamiento>): Int {
+        val index = when (tipo.lowercase().trim()) {
             "sin equipamiento" -> listaOpciones.indexOfFirst { it.id == 1L }
-            "peso libre" ->{
+            "peso libre" -> {
                 val idxBarra = listaOpciones.indexOfFirst { it.id == 2L }
                 if (idxBarra != -1) idxBarra else listaOpciones.indexOfFirst { it.id == 3L }
             }
+
             "máquinas", "maquinas" -> listaOpciones.indexOfFirst { it.id == 4L }
             else -> -1
         }
 
-        return if(index != -1) index else 0
+        return if (index != -1) index else 0
     }
 }

@@ -2,14 +2,9 @@ package com.example.aplicacion
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.aplicacion.api.ApiClient
 import com.example.aplicacion.api.ApiService
 import com.example.aplicacion.model.MedidaRequest
@@ -19,12 +14,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * Actividad para registrar una nueva entrada de peso corporal y porcentaje de grasa.
+ * Envía los datos al servidor y gestiona el feedback visual mediante ProgressBar.
+ */
 class NuevaMedidaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nueva_medida)
 
-        //Enlazamos los componentes
+        // Inicialización de componentes (Material Design)
         val etPeso = findViewById<TextInputEditText>(R.id.etNuevoPeso)
         val etGrasa = findViewById<TextInputEditText>(R.id.etGrasaNueva)
         val btnGuardar = findViewById<MaterialButton>(R.id.btnGuardarMediaForm)
@@ -37,17 +36,18 @@ class NuevaMedidaActivity : AppCompatActivity() {
             val pesoTexto = etPeso.text.toString().trim()
             val grasaTexto = etGrasa.text.toString().trim()
 
-            if(pesoTexto.isEmpty() || grasaTexto.isEmpty()){
+            // Validación de campos no vacíos
+            if (pesoTexto.isEmpty() || grasaTexto.isEmpty()) {
                 Toast.makeText(this, "Rellena ambos campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (idUsuario == -1L){
-                Toast.makeText(this, "Error: NO se encontró al usuario", Toast.LENGTH_SHORT).show()
+            if (idUsuario == -1L) {
+                Toast.makeText(this, "Error: No se identificó al usuario", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            //Cambiamos el estado de la UI a "Guardando..."
+            // UI: Activación del estado de carga para evitar envíos múltiples
             btnGuardar.isEnabled = false
             btnGuardar.text = ""
             progressBar.visibility = View.VISIBLE
@@ -57,28 +57,26 @@ class NuevaMedidaActivity : AppCompatActivity() {
 
             val request = MedidaRequest(idUsuario, peso, grasa)
 
-            apiService.registarMedida(request).enqueue(object : Callback<Void>{
-                override fun onResponse(call: Call<Void>, response: Response<Void>){
-                    //Restauramos la UI
+            // Envío del registro de medida a la API
+            apiService.registarMedida(request).enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    // UI: Restauración de estado
                     btnGuardar.isEnabled = true
                     btnGuardar.text = "GUARDAR"
                     progressBar.visibility = View.GONE
 
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         Toast.makeText(this@NuevaMedidaActivity, "¡Progreso guardado!", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }else{
-                        Toast.makeText(this@NuevaMedidaActivity, "Error al guardar el progreso",
-                            Toast.LENGTH_SHORT).show()
+                        finish() // Cierra la actividad tras el éxito
+                    } else {
+                        Toast.makeText(this@NuevaMedidaActivity, "Error al guardar: ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                override fun onFailure(call: Call<Void>, t: Throwable){
-                    //Restauramos la UI
+                override fun onFailure(call: Call<Void>, t: Throwable) {
                     btnGuardar.isEnabled = true
                     btnGuardar.text = "GUARDAR"
                     progressBar.visibility = View.GONE
-
                     Toast.makeText(this@NuevaMedidaActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
                 }
             })

@@ -16,8 +16,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * Actividad encargada de visualizar el catálogo de rutinas disponibles.
+ * Realiza una petición asíncrona a la API para obtener y listar las rutinas.
+ */
 class CatalogoRutinasActivity : AppCompatActivity() {
+
     private var listaRutinas: List<Rutina> = emptyList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalogo_rutinas)
@@ -28,34 +34,33 @@ class CatalogoRutinasActivity : AppCompatActivity() {
 
         val apiService = ApiClient.retrofit.create(ApiService::class.java)
 
-        //1. Mostramos la barra de carga antes de pedri los datos al servidor
+        // Gestión inicial de visibilidad: mostramos carga, ocultamos resultados
         progressBar.visibility = View.VISIBLE
         lvRutinas.visibility = View.GONE
         tvEmptyState.visibility = View.GONE
 
-        //Descargar las rutinas del servidor
-        apiService.obtenerTodasLasRutinas().enqueue(object : Callback<List<Rutina>>{
-            override fun onResponse(call: Call<List<Rutina>>, response: Response<List<Rutina>>){
-                //2. Ocultamos la barra de carga al recibir la respuesta
+        // Ejecución de la petición asíncrona para obtener las rutinas
+        apiService.obtenerTodasLasRutinas().enqueue(object : Callback<List<Rutina>> {
+
+            override fun onResponse(call: Call<List<Rutina>>, response: Response<List<Rutina>>) {
                 progressBar.visibility = View.GONE
 
-                if(response.isSuccessful && response.body() != null){
+                if (response.isSuccessful && response.body() != null) {
                     listaRutinas = response.body()!!
 
-                    if(listaRutinas.isEmpty()){
-                        //Si la lista vien vacía, mostramos el mensjae
+                    if (listaRutinas.isEmpty()) {
+                        // Caso: La API devuelve una lista vacía
                         tvEmptyState.visibility = View.VISIBLE
-                    }else {
-                        //Si hay rutinas, mostramos la lista
+                    } else {
+                        // Caso: Se han recibido datos correctamente
                         lvRutinas.visibility = View.VISIBLE
 
-                        //Transforma la lista de objetos Ruitna en una lista de textos
+                        // Mapeo de objetos Rutina a strings descriptivos para el adaptador
                         val textRutinas = listaRutinas.map { rutina ->
                             val numEjercicios = rutina.ejercicio?.size ?: 0
                             "${rutina.nombre} ($numEjercicios ejercicios) -- ${rutina.tipo}"
                         }
 
-                        //Se ponen en la ListView
                         val adapter = ArrayAdapter(
                             this@CatalogoRutinasActivity,
                             android.R.layout.simple_list_item_1,
@@ -63,35 +68,36 @@ class CatalogoRutinasActivity : AppCompatActivity() {
                         )
                         lvRutinas.adapter = adapter
                     }
-                }else{
-                    Toast.makeText(this@CatalogoRutinasActivity, "Error al cargar las rutinas",
-                        Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@CatalogoRutinasActivity, "Error al cargar las rutinas", Toast.LENGTH_SHORT).show()
                 }
             }
-            override fun onFailure(call: Call<List<Rutina>>, t: Throwable){
-                //Si falla el internt hay que ocultar la barra de carga
+
+            override fun onFailure(call: Call<List<Rutina>>, t: Throwable) {
+                // Caso: Error de conexión o fallo en la petición
                 progressBar.visibility = View.GONE
                 Toast.makeText(this@CatalogoRutinasActivity, "Error de red", Toast.LENGTH_SHORT).show()
             }
         })
 
-        //Accion al pueslar la rutina de la lista
+        // Configuración de navegación al hacer clic en un elemento de la lista
         lvRutinas.setOnItemClickListener { _, _, position, _ ->
             val rutinaSeleccionada = listaRutinas[position]
+            val idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
+
             val intent = Intent(this, EntrenamientoActivoActivity::class.java)
 
-            val idUsuario = intent.getLongExtra("ID_USUARIO", -1L)
+            // Propagación de datos necesarios para la actividad de entrenamiento
             intent.putExtra("ID_USUARIO", idUsuario)
             intent.putExtra("ID_RUTINA", rutinaSeleccionada.id)
             intent.putExtra("TIPO_RUTINA", rutinaSeleccionada.tipo)
 
+            // Conversión de IDs de ejercicios a formato CSV para su transporte
             val idsLista = rutinaSeleccionada.ejercicio?.mapNotNull { it.id } ?: emptyList()
             val idsTexto = idsLista.joinToString(",")
-
             intent.putExtra("IDS_EJERCICIOS_STRING", idsTexto)
 
             startActivity(intent)
-
         }
     }
 }

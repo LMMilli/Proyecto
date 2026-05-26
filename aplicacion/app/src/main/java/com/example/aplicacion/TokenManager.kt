@@ -5,13 +5,19 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.core.content.edit
 
+/**
+ * Gestor de autenticación y datos sensibles del usuario.
+ * Utiliza [EncryptedSharedPreferences] para asegurar que el token JWT y los datos
+ * del perfil se almacenen cifrados en el dispositivo, cumpliendo con estándares de seguridad.
+ */
 class TokenManager(context: Context) {
-    //Creamos una llave maestr super segura del propi sistema Android
+
+    // Generación de una llave maestra robusta mediante el sistema de seguridad de Android
     private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
 
-    //Creamos las preferecnias encriptadas
+    // Configuración de las preferencias encriptadas
     private val sharedPreferences = EncryptedSharedPreferences.create(
         context,
         "secret_shared_prefs",
@@ -20,24 +26,24 @@ class TokenManager(context: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    //Funcion para guardar el token cuando haces login
-    fun saveToken(token: String){
+    /** Guarda el token JWT tras un login exitoso. */
+    fun saveToken(token: String) {
         sharedPreferences.edit { putString("JWT_TOKEN", token) }
     }
 
-    //Funcion para leer el token
-    fun getToken(): String?{
+    /** Recupera el token JWT almacenado. */
+    fun getToken(): String? {
         return sharedPreferences.getString("JWT_TOKEN", null)
     }
 
-    //Funcion para borra el token(Cerrar sesion o caducar)
-    fun clearToken(){
+    /** Elimina el token (Logout). */
+    fun clearToken() {
         sharedPreferences.edit { remove("JWT_TOKEN") }
     }
 
-    //Funcion para guardar usuario
-    fun saveUserDAta(id: Long, nombre: String?, email: String){
-        sharedPreferences.edit().apply(){
+    /** Guarda los datos básicos del perfil de usuario. */
+    fun saveUserDAta(id: Long, nombre: String?, email: String) {
+        sharedPreferences.edit().apply {
             putLong("USER_ID", id)
             putString("USER_NAME", nombre)
             putString("USER_EMAIL", email)
@@ -49,27 +55,26 @@ class TokenManager(context: Context) {
     fun getUserId(): Long = sharedPreferences.getLong("USER_ID", -1L)
     fun getUserEmail(): String? = sharedPreferences.getString("USER_EMAIL", null)
 
-    fun clearAll(){
+    /** Limpia todo el almacenamiento seguro (Logout completo). */
+    fun clearAll() {
         sharedPreferences.edit { clear() }
     }
 
-    //Funcion para guardar la hora exacta en la que se hace el login
-    fun saveLoginTime(){
+    /** Registra el timestamp del momento en que se inicia sesión. */
+    fun saveLoginTime() {
         sharedPreferences.edit { putLong("LOGIN_TIME", System.currentTimeMillis()) }
     }
 
-    //Funciona pra comprobar si han pasado 24 horas
-    fun isTokenExpired(): Boolean{
-         val loginTime = sharedPreferences.getLong("LOGIN_TIME", 0L)
+    /** * Comprueba si la sesión ha superado las 24 horas de validez.
+     * @return true si el token ha expirado o no hay registro de inicio.
+     */
+    fun isTokenExpired(): Boolean {
+        val loginTime = sharedPreferences.getLong("LOGIN_TIME", 0L)
+        if (loginTime == 0L) return true
 
-        if(loginTime == 0L) return true
+        val currentTime = System.currentTimeMillis()
+        val twentyFourHoursInMillis = 24 * 60 * 60 * 1000L
 
-        val currenTime = System.currentTimeMillis()
-        val twentyFourHourInMillis = 24 * 60 * 60 * 1000L //24 horas en milisengundos
-
-        //Duvuelve true si la difrenica de tiempo es mayor a 24 horas
-        return (currenTime - loginTime) > twentyFourHourInMillis
+        return (currentTime - loginTime) > twentyFourHoursInMillis
     }
-
-
 }
